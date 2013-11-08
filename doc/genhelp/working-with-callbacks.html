@@ -1,0 +1,161 @@
+<html>
+<head>
+	<title>Working with callbacks</title>
+   <link rel="stylesheet" href="style.css" type="text/css">
+</head>
+<body>
+<div id="container">
+   	<div id="header">
+     		PBInvoke documentation. Version 1.X. Visit <a href="http://sqlbatch.com/pbinvoke">http://sqlbatch.com/pbinvoke</a> for updates.
+   	</div>         
+		<div id="main"><h1>Working with callbacks</h1>
+
+<p>PowerBuilder does not support PowerScript code to be directly called from external functions. 
+
+<p>As of PB9 there is a possibility to write a C++ extension for that task using PBNI. 
+However, implementing callbacks using PBNI has the following limitations:
+<li> PBNI requires knowledge of C++ from PowerBuilder developer  
+<li> PBNI extensions are quite hard to write and debug.
+<li> PBNI requires separate DLLs for ANSI and Unicode versions.
+<li> PBNI is available only as of PB9.
+<p>Also, there are additional limitations not related to PBNI.
+<li> It's hard to implement (even in C++) passing of context data to the callback if the caller does not support that. 
+<li> A charset conversion is needed when the caller is ANSI and PB is Unicode and vice versa. 
+
+<p> PBInvoke has support for declaring and using callbacks directly in PowerScript code 
+without these limitations. 
+
+<h2>Callback declaration</h2>
+<p> In order to declare a callback you need the following steps:
+<li>Inherit a custom class from n_pi_method
+<li>In the <code>constructor</code> event, call <code>of_declare_callback()</code> with a callback type declaration 
+or a type name (in case the type was declared earlier).
+<li>Extend the <code>ue_callback</code> event
+
+<p>Example:
+<pre class="pb"><span class="cmt">// in n_cst_timerproc's constructor (inherited from n_pi_method)</span>
+n_pi_core lnv_core
+
+lnv_core.of_declare("&
+typedef VOID CALLBACK TimerProc(&
+    HWND hwnd, &
+    UINT uMsg, &
+    UINT_PTR idEvent, &
+    DWORD dwTime &
+);&
+")
+
+of_declare_callback("TimerProc")
+
+</pre>
+
+<h2>Getting callback address</h2>
+Use <code>n_pi_method.of_get_addr()</code> to get the numeric value of the callback address ready to be passed to 
+an external function which accepts function pointers of this type.
+
+<p>Example:
+<pre class="pb">n_cst_timerproc lnv_timerproc 
+lnv_timerproc = Create n_cst_timerproc
+
+<span class="cmt">// ef_SetTimer is an external function, alias for WinAPI SetTimer</span>
+ll_timer = ef_SetTimer(0, 0, 1000, lnv_timerproc.of_get_addr()) 
+</pre>
+
+
+<h2>Accessing callback parameters and returning result</h2>
+
+<p>In the <code>ue_callback</code> event, callback parameters can be retrieved by 
+calling <code>of_get_param("<i>paramname</i>")</code>.
+
+<p>The return value is passed to the caller of the callback using usual RETURN operator.
+Note, that PBInvoke does not support the following types as return types of callbacks:
+<li> float(real), double
+<li> longlong
+<li> structs/unions of size of more than 4 bytes
+<p>However, pointers or references to those type are supported.
+
+<p>Example:
+<pre class="pb">ulong hwnd
+ulong uMsg
+ulong idEvent
+ulong dwTime
+
+<span class="cmt">// retrieve parameters</span>
+hwnd = of_get_param("hwnd")
+uMsg = of_get_param("uMsg")
+idEvent = of_get_param("idEvent")
+dwTime = of_get_param("dwTime")
+
+<span class="cmt">// process event</span>
+...
+
+Return 0
+</pre>
+
+<h2>Callback context data</h2>
+<p>All context data needed by a callback can be stored in the instance variables of the callback object 
+(which is a descendant of n_pi_method).
+<p>That is possible because PBInvoke generates a unique phisical address (function pointer) for
+each callback object, and when an external function calls your callback via that address, PBInvoke maps that call
+exactly to your object.
+
+
+<h2>Performance of callbacks</h2>
+<p>Marshalling parameters between C++ and PB is a slow operation (compared to PB external functions calls) due to
+the flexibility PBInvoke provides. If a PB callback is used as a handler for intercepting GUI messages 
+(e.g. via calling <code>SetWindowsHookEx</code>), then it may cause slow repaint of UI, or even a hang for a long time, 
+because UI generates huge amount of messages, most of which are ignored by the callback but take time for marshalling.
+
+<p>PBInvoke provides an optimization for that case. For callbacks used with <code>SetWindowsHookEx</code> WinAPI
+function, it's possible to setup a filter for message ID's which are processed by the callback.
+If a message ID does not pass the filter, the PowerScript code of the callback will not be called and all the processing
+will be done in C++ according to the rules described in MSDN for <code>SetWindowsHookEx</code> hooks: call 
+<code>CallNextHookEx</code>.
+<p>In order to activate the message filter you must call <code>of_set_windows_hook_filter()</code> immediately
+after calling <code>SetWindowsHookEx()</code>.
+<p> Syntax: <blockquote>
+ <code>
+ <i>callback</i>.of_set_windows_hook_filter(<i>hook_handle</i>, <i>hook_type</i>,  <i>message_id_array[]</i>)
+ </code>
+ <p>where
+ <li> <i>callback</i> - callback object
+ <li> <i>hook_handle</i> - hook handle returned by SetWindowsHookEx()
+ <li> <i>hook_type</i> - one of supported by PBInvoke hook types (WH_CALLWNDPROCRET, WH_CALLWNDPROC, WH_GETMESSAGE)
+ <li> <i>message_id_array[]</i> - array of long integers filled with accepted message ID's
+</blockquote>
+
+<p>Example:
+<pre class="pb"><span class="cmt">// This code is part of CustomSaveAs sample, which demonstrates </span>
+<span class="cmt">// using callbacks for customizing Windows Shell 'Save As' dialog.</span>
+Long ll_hInstance, ll_hThreadID
+
+ll_hInstance = inv_GetWindowLong.of_invoke(al_windowhandle, n_pi_winapi.GWL_HINSTANCE)
+ll_hThreadID = inv_GetCurrentThreadId.of_invoke()
+
+il_hHook = inv_SetWindowsHookEx.of_invoke(n_pi_winapi.WH_CALLWNDPROCRET, this.of_get_addr(), ll_hInstance, ll_hThreadID)
+
+<span class="cmt">// IMPORTANT! As number of messages sent to UI related windows hooks is really huge, </span>
+<span class="cmt">// processing them all in PowerScript is inefficient, and probably will hang the UI.</span>
+<span class="cmt">// PBInvoke can efficiently filter hook messages by message id.</span>
+<span class="cmt">// The following call enables this feature.</span>
+<span class="cmt">// of_set_windows_hook_filter must be called immediately after SetWindowsHookEx()</span>
+<span class="cmt">// The args: hook handle, hook type, and array of message ids which pass via filter to the hook.</span>
+of_set_windows_hook_filter(il_hHook, n_pi_winapi.WH_CALLWNDPROCRET, &
+	{n_pi_winapi.CB_ADDSTRING, n_pi_winapi.CB_SETCURSEL} )
+
+<span class="cmt">// Currently only WH_CALLWNDPROCRET, WH_CALLWNDPROC, WH_GETMESSAGE hook types are </span>
+<span class="cmt">// supported with this filtering feature</span>
+</pre>
+
+<h3>See also</h3>
+<li> <a href="calling-dll-functions.html">Calling DLL functions using PBInvoke</a>
+
+
+</div>
+   	<div id="footer">
+     		Copyright (C) 2009 <a href="mailto: Anatoly Moskovsky <avm@sqlbatch.com>">Anatoly Moskovsky</a>
+   	</div>         
+</div>
+
+</body>
+</html>

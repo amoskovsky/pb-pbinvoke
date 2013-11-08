@@ -1,0 +1,81 @@
+<html>
+<head>
+	<title>PBInvoke quick start guide</title>
+   <link rel="stylesheet" href="style.css" type="text/css">
+</head>
+<body>
+<div id="container">
+   	<div id="header">
+     		PBInvoke documentation. Version 1.X. Visit <a href="http://sqlbatch.com/pbinvoke">http://sqlbatch.com/pbinvoke</a> for updates.
+   	</div>         
+		<div id="main"><h1>PBInvoke quick start guide</h1>
+
+<h2>Add PBInvoke library to your project</h2>
+<ul>
+<li> Unpack PbInvoke.PBL and libPbInvoke.DLL for your PowerBuilder version (or closest older version) to your project folder.
+<li> Add PbInvoke.PBL to application's library list.
+<li> Make a migration.
+<li> Make a full build.
+</ul>
+
+<h2>Initialize PBInvoke</h2>
+If libPbInvoke.DLL is not in the PATH nor in the current directory then you'll need to specify the path to it 
+in application's open event before any other call to the library:
+<pre class="pb">n_pi_loader lnv_loader  <span class="cmt">// autoinstantiated</span>
+lnv_loader.of_preload_dll("modules\libPBInvoke.dll")
+</pre> 
+Note, you can change the path only, and not the DLL name because it is hard-coded in the external function declarations.
+
+
+<h2>Declare DLL function</h2>
+
+This code can be placed in any convenient script. Usually it's executed once per application session 
+and its results are cached somewhere (e.g. in instance/shared variables).
+<pre class="pb">n_pi_core lnv_core
+n_pi_library lnv_user32 
+n_pi_method lnv_SendMessage 
+
+lnv_user32 = lnv_core.of_declare_library("user32.dll")
+
+lnv_SendMessage = lnv_user32.of_declare_method(&
+	"LRESULT WINAPI SendMessage(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam) ")
+</pre> 
+
+Note, that the declaration is a C function prototype which can be directly copied from C header files 
+or from documentation such as MSDN.
+<p>
+HWND, UINT etc. are Windows types. Many such types are predefined in PBInvoke. 
+But if you get "Type 'XXXX' not found" error message, then you'll need to define the type yourself 
+before using it in declarations.
+<pre class="pb">n_pi_core lnv_core
+lnv_core.of_declare("typedef int NEWTYPE"); <span class="cmt">// this is just an example; for real typedef you'll need to </span>
+                                            <span class="cmt">// see the documentation or header files for DLL you call.</span>
+
+...of_declare_method(...)
+</pre> 
+
+
+<h2>Call DLL function</h2>
+
+<pre class="pb">long ll_result
+ll_result = lnv_SendMessage.of_invoke(Handle(w_somewin), n_pi_winapi.WM_KEYDOWN, 9 <span class="cmt">/*Tab*/</span>, 0) 
+</pre> 
+n_pi_winapi provides some WinAPI constants.
+
+<h2>More samples</h2>
+See the Samples folder in the archive for more complex examples with structures, callbacks etc.
+
+<h3>See also</h3>
+<li> <a href="calling-dll-functions.html">Calling DLL functions using PBInvoke</a>
+<li> <a href="handling-strings.html">Handling strings (char*, wchar_t*)</a>
+<li> <a href="winapi.html">WinAPI constants and types</a>
+<li> <a href="working-with-structures.html">Working with C/C++ structures/unions</a>
+<li> <a href="working-with-callbacks.html">Working with callbacks</a>
+</div>
+   	<div id="footer">
+     		Copyright (C) 2009 <a href="mailto: Anatoly Moskovsky <avm@sqlbatch.com>">Anatoly Moskovsky</a>
+   	</div>         
+</div>
+
+</body>
+</html>

@@ -1,0 +1,188 @@
+<h1>Calling DLL functions using PBInvoke</h1>
+
+<h2>Prototype Declarations</h2>
+
+<p>Before a DLL function can be called its DLL and the prototype must be declared.
+
+<p>Prototype declarations in PBInvoke were designed in the way which minimizes
+steps a developer must perform to write the declaration's code. 
+For most DLL functions there exist C-style declarations available either from the DLL's source code
+or from the documentation, like MSDN.
+PBInvoke can parse such C-style declarations as a string directly from PowerBuilder code at run-time.
+
+<p> In order to declare a function prototype, you must at first declare the DLL containing the function, as follows:
+<pb>n_pi_core lnv_core
+n_pi_library lnv_user32
+
+lnv_user32 = lnv_core.of_declare_library("user32.dll")
+</pb>
+If an error occures by default a message box is shown and the return value is null.
+You can disable message boxes globally as follows:
+<pb>n_pi_core lnv_core
+lnv_core.of_set_show_error(False) // this setting is applied to all future errors, 
+                                  // even in another instances of n_pi_core or another PBInvoke objects. 
+</pb>
+
+
+Now, when the library has been declared you can declare the prototype itself:
+<pb>n_pi_method lnv_SendMessage
+lnv_SendMessage = lnv_user32.of_declare_method(&
+	"LRESULT SendMessage(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam) ")
+</pb>
+You can see that the text of the declaration is exactly the same as it's shown in MSDN (except removed newlines).
+
+The complete syntax of the declaration string is the following:
+<blockquote>
+	<code><i>result_type</i> [ <i>calling_convention</i> ] <i>function_name</i>([<i>param_type param</i>, ...])</code>
+	<ul>where
+		<li> <i>result_type, param_type</i> is a built-in or previously declared C type. 
+					See <a href="supported-data-types.html">Supported data types</a>.
+		<li> <i>calling_convention</i> is an optional modifier  which specifies the calling convention.
+		     See <a href="http://msdn.microsoft.com/en-us/library/984x0h58.aspx"> an MSDN article</a> on what's this.
+		     PBInvoke supports only __cdecl or __stdcall modifiers. The default is __stdcall. 
+		     Also, a few synonyms are supported: CDECL, STDCALL, CALLBACK(__stdcall), WINAPI(__stdcall).
+	</ul>
+</blockquote>
+Due to the fact that MSDN shows all prototypes without  WINAPI modifier (which in fact is there), 
+PBInvoke has default calling convention WINAPI(__stdcall), which differs from the default C/C++ convention. 
+Be careful when copying declarations from sources other than MSDN.
+<p>Note, the default calling convention can be changed as follows:
+<pb>n_pi_core lnv_core
+lnv_core.of_set_default_stdcall() // this is enabled by default
+lnv_core.of_set_default_cdecl()
+
+</pb>
+
+<p>If the function prototype references to a custom type, the type must be declared before the prototype:
+<pb>
+lnv_core.of_declare(" &
+	typedef void *LPCITEMIDLIST, *LPITEMIDLIST; &
+	typedef int (CALLBACK* BFFCALLBACK)(HWND hwnd, UINT uMsg, LPARAM lParam, LPARAM lpData); &
+	typedef struct _browseinfo { &
+		 HWND        hwndOwner; &
+		 LPCITEMIDLIST pidlRoot; &
+		 LPTSTR       pszDisplayName;        /* Return display name of item selected. */ &
+		 LPCTSTR      lpszTitle;             /* text to go in the banner over the tree. */ &
+		 UINT         ulFlags;               /* Flags that control the return stuff */ &
+		 BFFCALLBACK  lpfn;                  /* BrowseCallbackProc function pointer */ &
+		 LPARAM       lParam;                /* extra info that's passed back in callbacks */ &
+		 int          iImage;                /* output var: where to return the Image index. */ &
+	} BROWSEINFO, *PBROWSEINFO, *LPBROWSEINFO; &
+	")
+
+lnv_SHBrowseForFolder = lnv_shell32.of_declare_method(&
+   "LPITEMIDLIST SHBrowseForFolder(LPBROWSEINFO lpbi)")
+</pb>
+
+There is also an alternative way of declaring prototypes (especially when you have many prototypes).
+At first declare all prototypes in one call to n_pi_core.of_declare() separating them with semicolons. 
+Then call n_pi_library.of_declare_method  for each function but passing only the function name.
+<pb>
+// predeclare
+lnv_core.of_declare(" &
+	typedef void *LPCITEMIDLIST, *LPITEMIDLIST; &
+	typedef int (CALLBACK* BFFCALLBACK)(HWND hwnd, UINT uMsg, LPARAM lParam, LPARAM lpData); &
+	typedef struct _browseinfo { &
+		 HWND        hwndOwner; &
+		 LPCITEMIDLIST pidlRoot; &
+		 LPTSTR       pszDisplayName;        /* Return display name of item selected. */ &
+		 LPCTSTR      lpszTitle;             /* text to go in the banner over the tree. */ &
+		 UINT         ulFlags;               /* Flags that control the return stuff */ &
+		 BFFCALLBACK  lpfn;                  /* BrowseCallbackProc function pointer */ &
+		 LPARAM       lParam;                /* extra info that's passed back in callbacks */ &
+		 int          iImage;                /* output var: where to return the Image index. */ &
+	} BROWSEINFO, *PBROWSEINFO, *LPBROWSEINFO; &
+	BOOL SHGetPathFromIDList(LPCITEMIDLIST pidl, LPTSTR pszPath); &
+	LPITEMIDLIST SHBrowseForFolder(LPBROWSEINFO lpbi); &
+	")
+// reuse 
+lnv_SHBrowseForFolder = lnv_shell32.of_declare_method("SHBrowseForFolder")
+lnv_SHGetPathFromIDList = lnv_shell32.of_declare_method("SHGetPathFromIDList")
+</pb>
+Note, you can mix type and prototype declarations provided you separate them with semicolons.
+
+
+<h2>Using functions</h2>
+<p>Now, when we declared the prototypes we can call the functions.
+
+<p>To call a function you call n_pi_method.of_invoke() passing all parameters. The return value is Any, and the actual
+return type depends on function declaration. 
+
+<p>There are 9 overloads of this method with 0 up to 8 parameters. 
+If you need more parameters, then you call of_invoke_a() method which takes a reference Any as a result and 
+an array of Any as parameters.
+<pb>
+Long ll_result
+ll_result = lnv_SendMessage.of_invoke(Handle(w_win), n_pi_winapi.WM_KEYDOWN, 9 /*Tab*/, 0)
+
+//or
+
+Boolean lb_ok
+Any la_result
+Any la_params[]
+la_params[1] = Handle(w_win)
+la_params[2] = n_pi_winapi.WM_KEYDOWN 
+la_params[3] = 9 /*Tab*/
+la_params[4] = 0
+lb_ok = lnv_SendMessage.of_invoke_a(ref la_result, la_params[])
+
+</pb>
+
+<h2>Working with reference (out) function parameters</h2>
+<p>PBInvoke supports retrieving parameters declared in C/C++ using * or & modifiers. 
+
+<p>Unlike PowerScript, PBInvoke requires separate operations to retrieve returned reference parameters after invocation.
+You can use the method <code>n_mi_method.of_get_param(<i>paramname</i>)</code> to retrieve the value of the <i>paramname</i>.
+<p>Example:
+<pb>
+//C++:
+// This sample function has the following semantics:
+// 1) If <i>bufSize</i> = 0 then <i>bufSize</i> is used to return the needed buffer size and <i>buf</i> is ignored.
+// 2) If <i>bufSize</i> != 0 then <i>buf</i> is assumed as allocated buffer of <i>bufSize</i> size
+//    In this case <i>buf</i> is filled with a string value.
+void getString(char* buf, int& bufSize)                                         
+{
+	char * value = "test";
+	if (bufSize == 0) 
+		bufSize = strlen(value);
+	else
+		strncpy(buf, value, bufSize);
+}
+
+//PB
+lnv_getString = lnv_somelib.of_declare_method("void CDECL getString(char* buf, int bufSize)")
+String ls_ret
+Long ll_len
+
+//1: get buffer size
+lnv_getString.of_invoke(0 /*null string, ignored*/, 0 /* get size marker */) 
+ll_len = lnv_getString.of_get_param("bufSize")
+
+//2: retrieve the string 
+lnv_getString.of_invoke(Space(ll_len) /*allocate buffer of ll_len characters*/, ll_len) 
+ls_ret = lnv_getString.of_get_param("buf")
+</pb>
+
+
+<h2>Calling C run-time (CRT) library functions</h2>
+
+In order to call CRT functions they must be declared with CDECL modifier because unlike C/C++, PBInvoke 
+declares functions with STDCALL by default.
+
+<p>Example:
+<pb>
+lnv_crt = lnv_core.of_declare_library("msvcrt.dll")
+lnv_strlen = lnv_crt.of_declare_method("int CDECL strlen(const char*s)")
+ll_len = lnv_strlen.of_invoke("test string") 
+</pb>
+
+
+<h3>See also</h3>
+<li> <a href="handling-strings.html">Handling strings (char*, wchar_t*)</a>
+<li> <a href="handling-tchar.html">Handling TCHAR and TSTR. Unicode/ANSI function name suffixes</a>
+<li> <a href="winapi.html">WinAPI constants and types</a>
+<li> <a href="working-with-callbacks.html">Working with callbacks</a>
+
+
+
+

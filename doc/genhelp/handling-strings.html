@@ -1,0 +1,74 @@
+<html>
+<head>
+	<title>Handling strings (char*, wchar_t*)</title>
+   <link rel="stylesheet" href="style.css" type="text/css">
+</head>
+<body>
+<div id="container">
+   	<div id="header">
+     		PBInvoke documentation. Version 1.X. Visit <a href="http://sqlbatch.com/pbinvoke">http://sqlbatch.com/pbinvoke</a> for updates.
+   	</div>         
+		<div id="main"><h1>Handling strings (char*, wchar_t*)</h1>
+
+<h2>Charset conversion</h2>
+When a function parameter is declared as char* or wchar_t*, 
+PBInvoke automatically converts the charset of the string if PowerBuilder 
+native strings have different charset.
+
+<pre class="pb">lnv_fn1 = lnv_somelib.of_declare_method("int strlen(char*s)")
+lnv_fn2 = lnv_somelib.of_declare_method("int wcslen(wchar_t*s)")
+
+<span class="cmt">// in PB9</span>
+ll_len = lnv_fn1.of_invoke("test") <span class="cmt">// no conversion, both caller and callee are ANSI</span>
+ll_len = lnv_fn2.of_invoke("test") <span class="cmt">// implicitly converts the string from ANSI to Unicode</span>
+
+<span class="cmt">// in PB10+ </span>
+ll_len = lnv_fn1.of_invoke("test") <span class="cmt">// implicitly converts the string from Unicode to ANSI</span>
+ll_len = lnv_fn2.of_invoke("test") <span class="cmt">// no conversion, both caller and callee are Unicode</span>
+</pre>
+
+Combinations of char and wchar_t in one function are supported as well.
+<pre class="pb">lnv_fn = lnv_somelib.of_declare_method("void some_fn(char*s1, wchar_t*s2)")
+<span class="cmt">// in PB9</span>
+lb_res = lnv_fn.of_invoke("test1", "test2") <span class="cmt">// "test1" - no conversion</span>
+                                            <span class="cmt">// "test2" - ANSI -> Unicode</span>
+<span class="cmt">// in PB10 - vice versa</span>
+</pre>
+
+<p>
+Special handling is performed for TCHAR based parameters.
+See <a href="handling-tchar.html">Handling TCHAR and TSTR. Unicode/ANSI function name suffixes.</a>
+
+<h2>Passing numeric address of string instead of string</h2>
+
+If you got an address of some string as a numeric value, for example as a result of calling another function,
+you can pass this number instead of a PB string value. Passing 0 or null value gives NULL string pointers. 
+<p> If a numeric address is passed instead of a string then no charset conversion is done.
+
+<pre class="pb">lnv_fn = lnv_somelib.of_declare_method("void some_fn(char*s)")
+
+lnv_s = lnv_core.of_create_value_of(LPSTR) <span class="cmt">//  LPSTR is char* in WinAPI</span>
+lnv_fn.of_invoke(lnv_s.of_get_ptr())       <span class="cmt">//  of_get_ptr() gets the numeric value of the pointer</span>
+
+<span class="cmt">// incorrect use:</span>
+lnv_s = lnv_core.of_create_value_of(LPWSTR) <span class="cmt">// LPWSTR is wchar_t* in WinAPI</span>
+lnv_fn.of_invoke(lnv_s.of_get_ptr())       <span class="cmt">// WRONG! because no conversion is done, </span>
+                                            <span class="cmt">// and the function expects char* and not wchar_t*</span>
+<span class="cmt">// passing NULL</span>
+lnv_fn.of_invoke(0) 
+SetNull(ls_null)
+lnv_fn.of_invoke(ls_null) 
+
+</pre>
+
+<h3>See also</h3>
+<li> <a href="handling-tchar.html">Handling TCHAR and TSTR. Unicode/ANSI function name suffixes</a>
+
+</div>
+   	<div id="footer">
+     		Copyright (C) 2009 <a href="mailto: Anatoly Moskovsky <avm@sqlbatch.com>">Anatoly Moskovsky</a>
+   	</div>         
+</div>
+
+</body>
+</html>

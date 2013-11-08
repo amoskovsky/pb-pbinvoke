@@ -1,0 +1,4 @@
+Author: Anatoly Moskovsky <avm@sqlbatch.com>
+License: Public Domain
+
+

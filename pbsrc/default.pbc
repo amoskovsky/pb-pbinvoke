@@ -1,0 +1,26 @@
+Version = 1
+PbVersion = 9
+SrcDir =
+
+App = a_tester
+Libs = (
+tester\tester.pbl,,1
+pbinvoke\pbinvoke.pbl,,1
+tester\debug.pbl,,1
+)
+Exe = ..\projects\libPBInvoke\Debug\aaaaa.exe  # Executable file name
+ExePbr =   
+ExeIcon = 
+MachineCode = 0  # 0 - P-CODE, 1 - DLL    
+#Use new visual style controls (XP)
+xpstyle = 0 #  0 - old / 1 - new
+
+ProductName = 
+CompanyName = 
+Description = 
+Copyright = 
+ProductVersion = 
+ProductVersionNum = 
+FileVersion = 
+FileVersionNum = 
+ 

@@ -1,0 +1,70 @@
+<h1>Supported data types</h1>
+
+<h2>Simple types</h2>
+
+The folowing C/C++ types are supported
+<ul>
+<li>short, int, long, longlong and their signed/unsigned versions
+<li>char, wchar_t - character types
+<li>double, float 
+<li>void - return type for procedures
+</ul>
+
+<h2>Structure types</h2>
+
+<ul>
+<li> struct - a record of fields of any type
+<li> union - a struct whose fields share the same memory.
+</ul>
+For structs/unions the packing attribute can be specified. See the reference.
+
+<h2>Pointer types</h2>
+<ul>
+<li> pointer to type (*)
+<li> reference to type (&)
+</ul>
+
+
+<h2>Function prototypes</h2>
+<ul>
+<li> external function prototype 
+<li> pointer to function (callback).
+</ul>
+For functions and function pointers a few attributes are supported. See the reference.
+
+
+<h2>User-defined types</h2>
+A developer can declare any custom C type using one or more C <i>typedef</i> operators separated by ";" and 
+passed as a string to n_pi_core.of_declare(), as follows:
+<pb>
+n_pi_core lnv_core
+lnv_core.of_declare(" &
+	typedef void *LPCITEMIDLIST, *LPITEMIDLIST; &
+	typedef int (CALLBACK* BFFCALLBACK)(HWND hwnd, UINT uMsg, LPARAM lParam, LPARAM lpData); &
+	")
+
+</pb>
+
+<h2>WinAPI types</h2>
+<p>The most widely used WinAPI types are predeclared in PBInvoke.
+<p>These are:
+TCHAR, TSTR, LPTSTR, LPCTSTR, WCHAR, WSTR, LPWSTR, LPCWSTR, CHAR, STR, LPSTR, LPCSTR, BYTE,BOOL, HWND, HINSTANCE, 
+LPBOOL, INT, UINT, UINT_PTR, DWORD, LPDWORD, HANDLE, LRESULT, LONG, ULONG, WPARAM, LPARAM, HMODULE, HHOOK,
+WORD, LPWORD, SHORT, USHORT, VOID, PVOID, LPVOID, LPCVOID, FLOAT, LPSECURITY_ATTRIBUTES
+
+
+<h2>Not supported</h2>
+<li> Double, float as a return type for callbacks. However pointers to such types are supported as a return type.
+<li> Any struct of size of more than 4 bytes as a return type for any function. 
+     However pointers to such structures are supported as a return type.
+<li> Classes.
+<li> Structures inherited from other structures.
+
+<h3>See also</h3>
+<li> <a href="handling-strings.html">Handling strings (char*, wchar_t*)</a>
+<li> <a href="handling-tchar.html">Handling TCHAR and TSTR. Unicode/ANSI function name suffixes</a>
+<li> <a href="winapi.html">WinAPI constants and types</a>
+<li> <a href="working-with-structures.html">Working with C/C++ structures/unions</a>
+<li> <a href="working-with-callbacks.html">Working with callbacks</a>
+<li> <a href="unsupported.html">Unsupported and unimplemented PBInvoke features</a>
+

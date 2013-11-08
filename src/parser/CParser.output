@@ -1,0 +1,2323 @@
+Неиспользованные терминалы
+
+   T_ENUM
+   ATTR_CONST
+   DBLCOLON
+   ASSIGN
+   PARAM_SEQ
+   ATTR_PRE
+   ATTR_POST
+   LOW
+   HIGH
+
+
+Грамматика
+
+    0 $accept: prog $end
+
+    1 prog: decl_seq
+
+    2 decl_seq: sep
+    3         | sep decl
+    4         | decl
+    5         | decl_seq sep decl
+    6         | decl_seq sep
+
+    7 sep: SEMICOLON
+    8    | pragma
+
+    9 decl: typedef
+   10     | namedef
+   11     | namedef2
+
+   12 pragma: pragma_pack
+
+   13 pragma_pack: T_PRAGMA_PACK LPAREN NUM RPAREN
+   14            | T_PRAGMA_PACK LPAREN ID RPAREN
+   15            | T_PRAGMA_PACK LPAREN ID COMMA NUM RPAREN
+
+   16 namedef: type_ref maybe_declarator_seq
+
+   17 typedef: T_TYPEDEF type_ref maybe_declarator_seq
+
+   18 namedef2: TEST_RULE type_ref maybe_declarator_seq
+
+   19 type_ref: attributed_type
+
+   20 attributed_type: internal_type
+   21                | user_type
+   22                | declspec attributed_type
+
+   23 internal_type: attr
+   24              | internal_type attr
+   25              | internal_type declspec
+
+   26 attr: T_SIGNED
+   27     | T_UNSIGNED
+   28     | T_CHAR
+   29     | T_INT8
+   30     | T_WCHAR_T
+   31     | T_SHORT
+   32     | T_INT16
+   33     | T_INT32
+   34     | T_INT
+   35     | T_INT64
+   36     | T_LONG
+   37     | T_LONGLONG
+   38     | T_DOUBLE
+   39     | T_FLOAT
+   40     | T_VOID
+
+   41 user_type: ID
+   42          | struct_type
+   43          | user_type declspec
+
+   44 struct_type: struct ID
+   45            | struct struct_tag LCURL var_decl_seq RCURL
+
+   46 declspec: ATTR_DECLSPEC LPAREN ID RPAREN
+   47         | ATTR_DECLSPEC LPAREN ID LPAREN NUM RPAREN RPAREN
+
+   48 struct: T_STRUCT
+   49       | T_UNION
+
+   50 struct_tag: /* пусто */
+   51           | ID
+   52           | declspec
+   53           | declspec ID
+
+   54 var_decl_seq: /* пусто */
+   55             | var_decl_seq var_decl SEMICOLON
+
+   56 var_decl: type_ref declarator_seq
+
+   57 maybe_declarator_seq: /* пусто */
+   58                     | declarator_seq
+
+   59 declarator_seq: declarator
+   60               | declarator_seq COMMA declarator
+
+   61 declarator: declarator_arg
+   62           | LPAREN declarator RPAREN LPAREN maybe_param_seq RPAREN
+   63           | ID LBRACKET array_bound RBRACKET
+   64           | STAR declarator
+   65           | ADDR declarator
+   66           | call_modifier declarator
+
+   67 maybe_param_seq: /* пусто */
+   68                | param_seq
+
+   69 param_seq: param
+   70          | param_seq COMMA param
+
+   71 param: type_ref param_declarator
+
+   72 param_declarator: /* пусто */
+   73                 | declarator_arg
+   74                 | LPAREN param_declarator RPAREN LPAREN maybe_param_seq RPAREN
+   75                 | ID LBRACKET array_bound RBRACKET
+   76                 | STAR param_declarator
+   77                 | ADDR param_declarator
+   78                 | call_modifier param_declarator
+
+   79 declarator_arg: ID
+   80               | ID LPAREN maybe_param_seq RPAREN
+
+   81 array_bound: /* пусто */
+   82            | NUM
+
+   83 call_modifier: ATTR_CDECL
+   84              | ATTR_STDCALL
+
+
+Терминальные символы с правилами, в которых они появляются
+
+$end (0) 0
+error (256)
+ID (258) 14 15 41 44 46 47 51 53 63 75 79 80
+NUM (259) 13 15 47 82
+T_TYPEDEF (260) 17
+ATTR_CDECL (261) 83
+ATTR_STDCALL (262) 84
+T_STRUCT (263) 48
+T_UNION (264) 49
+T_ENUM (265)
+ATTR_CONST (266)
+ATTR_DECLSPEC (267) 46 47
+T_PRAGMA_PACK (268) 13 14 15
+T_UNSIGNED (269) 27
+T_SIGNED (270) 26
+T_INT8 (271) 29
+T_INT16 (272) 32
+T_INT32 (273) 33
+T_INT64 (274) 35
+T_DOUBLE (275) 38
+T_FLOAT (276) 39
+T_CHAR (277) 28
+T_WCHAR_T (278) 30
+T_INT (279) 34
+T_LONG (280) 36
+T_LONGLONG (281) 37
+T_SHORT (282) 31
+T_VOID (283) 40
+SEMICOLON (284) 7 55
+DBLCOLON (285)
+ASSIGN (286)
+COMMA (287) 15 60 70
+LPAREN (288) 13 14 15 46 47 62 74 80
+RPAREN (289) 13 14 15 46 47 62 74 80
+LCURL (290) 45
+RCURL (291) 45
+LBRACKET (292) 63 75
+RBRACKET (293) 63 75
+STAR (294) 64 76
+ADDR (295) 65 77
+PARAM_SEQ (296)
+ATTR_PRE (297)
+ATTR_POST (298)
+TEST_RULE (299) 18
+LOW (300)
+HIGH (301)
+
+
+Нетерминальные символы с правилами, в которых они появляются
+
+$accept (47)
+    налево: 0
+prog (48)
+    налево: 1, направо: 0
+decl_seq (49)
+    налево: 2 3 4 5 6, направо: 1 5 6
+sep (50)
+    налево: 7 8, направо: 2 3 5 6
+decl (51)
+    налево: 9 10 11, направо: 3 4 5
+pragma (52)
+    налево: 12, направо: 8
+pragma_pack (53)
+    налево: 13 14 15, направо: 12
+namedef (54)
+    налево: 16, направо: 10
+typedef (55)
+    налево: 17, направо: 9
+namedef2 (56)
+    налево: 18, направо: 11
+type_ref (57)
+    налево: 19, направо: 16 17 18 56 71
+attributed_type (58)
+    налево: 20 21 22, направо: 19 22
+internal_type (59)
+    налево: 23 24 25, направо: 20 24 25
+attr (60)
+    налево: 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40,
+    направо: 23 24
+user_type (61)
+    налево: 41 42 43, направо: 21 43
+struct_type (62)
+    налево: 44 45, направо: 42
+declspec (63)
+    налево: 46 47, направо: 22 25 43 52 53
+struct (64)
+    налево: 48 49, направо: 44 45
+struct_tag (65)
+    налево: 50 51 52 53, направо: 45
+var_decl_seq (66)
+    налево: 54 55, направо: 45 55
+var_decl (67)
+    налево: 56, направо: 55
+maybe_declarator_seq (68)
+    налево: 57 58, направо: 16 17 18
+declarator_seq (69)
+    налево: 59 60, направо: 56 58 60
+declarator (70)
+    налево: 61 62 63 64 65 66, направо: 59 60 62 64 65 66
+maybe_param_seq (71)
+    налево: 67 68, направо: 62 74 80
+param_seq (72)
+    налево: 69 70, направо: 68 70
+param (73)
+    налево: 71, направо: 69 70
+param_declarator (74)
+    налево: 72 73 74 75 76 77 78, направо: 71 74 76 77 78
+declarator_arg (75)
+    налево: 79 80, направо: 61 73
+array_bound (76)
+    налево: 81 82, направо: 63 75
+call_modifier (77)
+    налево: 83 84, направо: 66 78
+
+
+состояние 0
+
+    0 $accept: . prog $end
+    1 prog: . decl_seq
+    2 decl_seq: . sep
+    3         | . sep decl
+    4         | . decl
+    5         | . decl_seq sep decl
+    6         | . decl_seq sep
+    7 sep: . SEMICOLON
+    8    | . pragma
+    9 decl: . typedef
+   10     | . namedef
+   11     | . namedef2
+   12 pragma: . pragma_pack
+   13 pragma_pack: . T_PRAGMA_PACK LPAREN NUM RPAREN
+   14            | . T_PRAGMA_PACK LPAREN ID RPAREN
+   15            | . T_PRAGMA_PACK LPAREN ID COMMA NUM RPAREN
+   16 namedef: . type_ref maybe_declarator_seq
+   17 typedef: . T_TYPEDEF type_ref maybe_declarator_seq
+   18 namedef2: . TEST_RULE type_ref maybe_declarator_seq
+   19 type_ref: . attributed_type
+   20 attributed_type: . internal_type
+   21                | . user_type
+   22                | . declspec attributed_type
+   23 internal_type: . attr
+   24              | . internal_type attr
+   25              | . internal_type declspec
+   26 attr: . T_SIGNED
+   27     | . T_UNSIGNED
+   28     | . T_CHAR
+   29     | . T_INT8
+   30     | . T_WCHAR_T
+   31     | . T_SHORT
+   32     | . T_INT16
+   33     | . T_INT32
+   34     | . T_INT
+   35     | . T_INT64
+   36     | . T_LONG
+   37     | . T_LONGLONG
+   38     | . T_DOUBLE
+   39     | . T_FLOAT
+   40     | . T_VOID
+   41 user_type: . ID
+   42          | . struct_type
+   43          | . user_type declspec
+   44 struct_type: . struct ID
+   45            | . struct struct_tag LCURL var_decl_seq RCURL
+   46 declspec: . ATTR_DECLSPEC LPAREN ID RPAREN
+   47         | . ATTR_DECLSPEC LPAREN ID LPAREN NUM RPAREN RPAREN
+   48 struct: . T_STRUCT
+   49       | . T_UNION
+
+    ID             сдвиг, и переход в состояние 1
+    T_TYPEDEF      сдвиг, и переход в состояние 2
+    T_STRUCT       сдвиг, и переход в состояние 3
+    T_UNION        сдвиг, и переход в состояние 4
+    ATTR_DECLSPEC  сдвиг, и переход в состояние 5
+    T_PRAGMA_PACK  сдвиг, и переход в состояние 6
+    T_UNSIGNED     сдвиг, и переход в состояние 7
+    T_SIGNED       сдвиг, и переход в состояние 8
+    T_INT8         сдвиг, и переход в состояние 9
+    T_INT16        сдвиг, и переход в состояние 10
+    T_INT32        сдвиг, и переход в состояние 11
+    T_INT64        сдвиг, и переход в состояние 12
+    T_DOUBLE       сдвиг, и переход в состояние 13
+    T_FLOAT        сдвиг, и переход в состояние 14
+    T_CHAR         сдвиг, и переход в состояние 15
+    T_WCHAR_T      сдвиг, и переход в состояние 16
+    T_INT          сдвиг, и переход в состояние 17
+    T_LONG         сдвиг, и переход в состояние 18
+    T_LONGLONG     сдвиг, и переход в состояние 19
+    T_SHORT        сдвиг, и переход в состояние 20
+    T_VOID         сдвиг, и переход в состояние 21
+    SEMICOLON      сдвиг, и переход в состояние 22
+    TEST_RULE      сдвиг, и переход в состояние 23
+
+    prog             переход в состояние 24
+    decl_seq         переход в состояние 25
+    sep              переход в состояние 26
+    decl             переход в состояние 27
+    pragma           переход в состояние 28
+    pragma_pack      переход в состояние 29
+    namedef          переход в состояние 30
+    typedef          переход в состояние 31
+    namedef2         переход в состояние 32
+    type_ref         переход в состояние 33
+    attributed_type  переход в состояние 34
+    internal_type    переход в состояние 35
+    attr             переход в состояние 36
+    user_type        переход в состояние 37
+    struct_type      переход в состояние 38
+    declspec         переход в состояние 39
+    struct           переход в состояние 40
+
+
+состояние 1
+
+   41 user_type: ID .
+
+    $default  вывод с использованием правила 41 (user_type)
+
+
+состояние 2
+
+   17 typedef: T_TYPEDEF . type_ref maybe_declarator_seq
+   19 type_ref: . attributed_type
+   20 attributed_type: . internal_type
+   21                | . user_type
+   22                | . declspec attributed_type
+   23 internal_type: . attr
+   24              | . internal_type attr
+   25              | . internal_type declspec
+   26 attr: . T_SIGNED
+   27     | . T_UNSIGNED
+   28     | . T_CHAR
+   29     | . T_INT8
+   30     | . T_WCHAR_T
+   31     | . T_SHORT
+   32     | . T_INT16
+   33     | . T_INT32
+   34     | . T_INT
+   35     | . T_INT64
+   36     | . T_LONG
+   37     | . T_LONGLONG
+   38     | . T_DOUBLE
+   39     | . T_FLOAT
+   40     | . T_VOID
+   41 user_type: . ID
+   42          | . struct_type
+   43          | . user_type declspec
+   44 struct_type: . struct ID
+   45            | . struct struct_tag LCURL var_decl_seq RCURL
+   46 declspec: . ATTR_DECLSPEC LPAREN ID RPAREN
+   47         | . ATTR_DECLSPEC LPAREN ID LPAREN NUM RPAREN RPAREN
+   48 struct: . T_STRUCT
+   49       | . T_UNION
+
+    ID             сдвиг, и переход в состояние 1
+    T_STRUCT       сдвиг, и переход в состояние 3
+    T_UNION        сдвиг, и переход в состояние 4
+    ATTR_DECLSPEC  сдвиг, и переход в состояние 5
+    T_UNSIGNED     сдвиг, и переход в состояние 7
+    T_SIGNED       сдвиг, и переход в состояние 8
+    T_INT8         сдвиг, и переход в состояние 9
+    T_INT16        сдвиг, и переход в состояние 10
+    T_INT32        сдвиг, и переход в состояние 11
+    T_INT64        сдвиг, и переход в состояние 12
+    T_DOUBLE       сдвиг, и переход в состояние 13
+    T_FLOAT        сдвиг, и переход в состояние 14
+    T_CHAR         сдвиг, и переход в состояние 15
+    T_WCHAR_T      сдвиг, и переход в состояние 16
+    T_INT          сдвиг, и переход в состояние 17
+    T_LONG         сдвиг, и переход в состояние 18
+    T_LONGLONG     сдвиг, и переход в состояние 19
+    T_SHORT        сдвиг, и переход в состояние 20
+    T_VOID         сдвиг, и переход в состояние 21
+
+    type_ref         переход в состояние 41
+    attributed_type  переход в состояние 34
+    internal_type    переход в состояние 35
+    attr             переход в состояние 36
+    user_type        переход в состояние 37
+    struct_type      переход в состояние 38
+    declspec         переход в состояние 39
+    struct           переход в состояние 40
+
+
+состояние 3
+
+   48 struct: T_STRUCT .
+
+    $default  вывод с использованием правила 48 (struct)
+
+
+состояние 4
+
+   49 struct: T_UNION .
+
+    $default  вывод с использованием правила 49 (struct)
+
+
+состояние 5
+
+   46 declspec: ATTR_DECLSPEC . LPAREN ID RPAREN
+   47         | ATTR_DECLSPEC . LPAREN ID LPAREN NUM RPAREN RPAREN
+
+    LPAREN  сдвиг, и переход в состояние 42
+
+
+состояние 6
+
+   13 pragma_pack: T_PRAGMA_PACK . LPAREN NUM RPAREN
+   14            | T_PRAGMA_PACK . LPAREN ID RPAREN
+   15            | T_PRAGMA_PACK . LPAREN ID COMMA NUM RPAREN
+
+    LPAREN  сдвиг, и переход в состояние 43
+
+
+состояние 7
+
+   27 attr: T_UNSIGNED .
+
+    $default  вывод с использованием правила 27 (attr)
+
+
+состояние 8
+
+   26 attr: T_SIGNED .
+
+    $default  вывод с использованием правила 26 (attr)
+
+
+состояние 9
+
+   29 attr: T_INT8 .
+
+    $default  вывод с использованием правила 29 (attr)
+
+
+состояние 10
+
+   32 attr: T_INT16 .
+
+    $default  вывод с использованием правила 32 (attr)
+
+
+состояние 11
+
+   33 attr: T_INT32 .
+
+    $default  вывод с использованием правила 33 (attr)
+
+
+состояние 12
+
+   35 attr: T_INT64 .
+
+    $default  вывод с использованием правила 35 (attr)
+
+
+состояние 13
+
+   38 attr: T_DOUBLE .
+
+    $default  вывод с использованием правила 38 (attr)
+
+
+состояние 14
+
+   39 attr: T_FLOAT .
+
+    $default  вывод с использованием правила 39 (attr)
+
+
+состояние 15
+
+   28 attr: T_CHAR .
+
+    $default  вывод с использованием правила 28 (attr)
+
+
+состояние 16
+
+   30 attr: T_WCHAR_T .
+
+    $default  вывод с использованием правила 30 (attr)
+
+
+состояние 17
+
+   34 attr: T_INT .
+
+    $default  вывод с использованием правила 34 (attr)
+
+
+состояние 18
+
+   36 attr: T_LONG .
+
+    $default  вывод с использованием правила 36 (attr)
+
+
+состояние 19
+
+   37 attr: T_LONGLONG .
+
+    $default  вывод с использованием правила 37 (attr)
+
+
+состояние 20
+
+   31 attr: T_SHORT .
+
+    $default  вывод с использованием правила 31 (attr)
+
+
+состояние 21
+
+   40 attr: T_VOID .
+
+    $default  вывод с использованием правила 40 (attr)
+
+
+состояние 22
+
+    7 sep: SEMICOLON .
+
+    $default  вывод с использованием правила 7 (sep)
+
+
+состояние 23
+
+   18 namedef2: TEST_RULE . type_ref maybe_declarator_seq
+   19 type_ref: . attributed_type
+   20 attributed_type: . internal_type
+   21                | . user_type
+   22                | . declspec attributed_type
+   23 internal_type: . attr
+   24              | . internal_type attr
+   25              | . internal_type declspec
+   26 attr: . T_SIGNED
+   27     | . T_UNSIGNED
+   28     | . T_CHAR
+   29     | . T_INT8
+   30     | . T_WCHAR_T
+   31     | . T_SHORT
+   32     | . T_INT16
+   33     | . T_INT32
+   34     | . T_INT
+   35     | . T_INT64
+   36     | . T_LONG
+   37     | . T_LONGLONG
+   38     | . T_DOUBLE
+   39     | . T_FLOAT
+   40     | . T_VOID
+   41 user_type: . ID
+   42          | . struct_type
+   43          | . user_type declspec
+   44 struct_type: . struct ID
+   45            | . struct struct_tag LCURL var_decl_seq RCURL
+   46 declspec: . ATTR_DECLSPEC LPAREN ID RPAREN
+   47         | . ATTR_DECLSPEC LPAREN ID LPAREN NUM RPAREN RPAREN
+   48 struct: . T_STRUCT
+   49       | . T_UNION
+
+    ID             сдвиг, и переход в состояние 1
+    T_STRUCT       сдвиг, и переход в состояние 3
+    T_UNION        сдвиг, и переход в состояние 4
+    ATTR_DECLSPEC  сдвиг, и переход в состояние 5
+    T_UNSIGNED     сдвиг, и переход в состояние 7
+    T_SIGNED       сдвиг, и переход в состояние 8
+    T_INT8         сдвиг, и переход в состояние 9
+    T_INT16        сдвиг, и переход в состояние 10
+    T_INT32        сдвиг, и переход в состояние 11
+    T_INT64        сдвиг, и переход в состояние 12
+    T_DOUBLE       сдвиг, и переход в состояние 13
+    T_FLOAT        сдвиг, и переход в состояние 14
+    T_CHAR         сдвиг, и переход в состояние 15
+    T_WCHAR_T      сдвиг, и переход в состояние 16
+    T_INT          сдвиг, и переход в состояние 17
+    T_LONG         сдвиг, и переход в состояние 18
+    T_LONGLONG     сдвиг, и переход в состояние 19
+    T_SHORT        сдвиг, и переход в состояние 20
+    T_VOID         сдвиг, и переход в состояние 21
+
+    type_ref         переход в состояние 44
+    attributed_type  переход в состояние 34
+    internal_type    переход в состояние 35
+    attr             переход в состояние 36
+    user_type        переход в состояние 37
+    struct_type      переход в состояние 38
+    declspec         переход в состояние 39
+    struct           переход в состояние 40
+
+
+состояние 24
+
+    0 $accept: prog . $end
+
+    $end  сдвиг, и переход в состояние 45
+
+
+состояние 25
+
+    1 prog: decl_seq .  [$end]
+    5 decl_seq: decl_seq . sep decl
+    6         | decl_seq . sep
+    7 sep: . SEMICOLON
+    8    | . pragma
+   12 pragma: . pragma_pack
+   13 pragma_pack: . T_PRAGMA_PACK LPAREN NUM RPAREN
+   14            | . T_PRAGMA_PACK LPAREN ID RPAREN
+   15            | . T_PRAGMA_PACK LPAREN ID COMMA NUM RPAREN
+
+    T_PRAGMA_PACK  сдвиг, и переход в состояние 6
+    SEMICOLON      сдвиг, и переход в состояние 22
+
+    $default  вывод с использованием правила 1 (prog)
+
+    sep          переход в состояние 46
+    pragma       переход в состояние 28
+    pragma_pack  переход в состояние 29
+
+
+состояние 26
+
+    2 decl_seq: sep .  [$end, T_PRAGMA_PACK, SEMICOLON]
+    3         | sep . decl
+    9 decl: . typedef
+   10     | . namedef
+   11     | . namedef2
+   16 namedef: . type_ref maybe_declarator_seq
+   17 typedef: . T_TYPEDEF type_ref maybe_declarator_seq
+   18 namedef2: . TEST_RULE type_ref maybe_declarator_seq
+   19 type_ref: . attributed_type
+   20 attributed_type: . internal_type
+   21                | . user_type
+   22                | . declspec attributed_type
+   23 internal_type: . attr
+   24              | . internal_type attr
+   25              | . internal_type declspec
+   26 attr: . T_SIGNED
+   27     | . T_UNSIGNED
+   28     | . T_CHAR
+   29     | . T_INT8
+   30     | . T_WCHAR_T
+   31     | . T_SHORT
+   32     | . T_INT16
+   33     | . T_INT32
+   34     | . T_INT
+   35     | . T_INT64
+   36     | . T_LONG
+   37     | . T_LONGLONG
+   38     | . T_DOUBLE
+   39     | . T_FLOAT
+   40     | . T_VOID
+   41 user_type: . ID
+   42          | . struct_type
+   43          | . user_type declspec
+   44 struct_type: . struct ID
+   45            | . struct struct_tag LCURL var_decl_seq RCURL
+   46 declspec: . ATTR_DECLSPEC LPAREN ID RPAREN
+   47         | . ATTR_DECLSPEC LPAREN ID LPAREN NUM RPAREN RPAREN
+   48 struct: . T_STRUCT
+   49       | . T_UNION
+
+    ID             сдвиг, и переход в состояние 1
+    T_TYPEDEF      сдвиг, и переход в состояние 2
+    T_STRUCT       сдвиг, и переход в состояние 3
+    T_UNION        сдвиг, и переход в состояние 4
+    ATTR_DECLSPEC  сдвиг, и переход в состояние 5
+    T_UNSIGNED     сдвиг, и переход в состояние 7
+    T_SIGNED       сдвиг, и переход в состояние 8
+    T_INT8         сдвиг, и переход в состояние 9
+    T_INT16        сдвиг, и переход в состояние 10
+    T_INT32        сдвиг, и переход в состояние 11
+    T_INT64        сдвиг, и переход в состояние 12
+    T_DOUBLE       сдвиг, и переход в состояние 13
+    T_FLOAT        сдвиг, и переход в состояние 14
+    T_CHAR         сдвиг, и переход в состояние 15
+    T_WCHAR_T      сдвиг, и переход в состояние 16
+    T_INT          сдвиг, и переход в состояние 17
+    T_LONG         сдвиг, и переход в состояние 18
+    T_LONGLONG     сдвиг, и переход в состояние 19
+    T_SHORT        сдвиг, и переход в состояние 20
+    T_VOID         сдвиг, и переход в состояние 21
+    TEST_RULE      сдвиг, и переход в состояние 23
+
+    $default  вывод с использованием правила 2 (decl_seq)
+
+    decl             переход в состояние 47
+    namedef          переход в состояние 30
+    typedef          переход в состояние 31
+    namedef2         переход в состояние 32
+    type_ref         переход в состояние 33
+    attributed_type  переход в состояние 34
+    internal_type    переход в состояние 35
+    attr             переход в состояние 36
+    user_type        переход в состояние 37
+    struct_type      переход в состояние 38
+    declspec         переход в состояние 39
+    struct           переход в состояние 40
+
+
+состояние 27
+
+    4 decl_seq: decl .
+
+    $default  вывод с использованием правила 4 (decl_seq)
+
+
+состояние 28
+
+    8 sep: pragma .
+
+    $default  вывод с использованием правила 8 (sep)
+
+
+состояние 29
+
+   12 pragma: pragma_pack .
+
+    $default  вывод с использованием правила 12 (pragma)
+
+
+состояние 30
+
+   10 decl: namedef .
+
+    $default  вывод с использованием правила 10 (decl)
+
+
+состояние 31
+
+    9 decl: typedef .
+
+    $default  вывод с использованием правила 9 (decl)
+
+
+состояние 32
+
+   11 decl: namedef2 .
+
+    $default  вывод с использованием правила 11 (decl)
+
+
+состояние 33
+
+   16 namedef: type_ref . maybe_declarator_seq
+   57 maybe_declarator_seq: .  [$end, T_PRAGMA_PACK, SEMICOLON]
+   58                     | . declarator_seq
+   59 declarator_seq: . declarator
+   60               | . declarator_seq COMMA declarator
+   61 declarator: . declarator_arg
+   62           | . LPAREN declarator RPAREN LPAREN maybe_param_seq RPAREN
+   63           | . ID LBRACKET array_bound RBRACKET
+   64           | . STAR declarator
+   65           | . ADDR declarator
+   66           | . call_modifier declarator
+   79 declarator_arg: . ID
+   80               | . ID LPAREN maybe_param_seq RPAREN
+   83 call_modifier: . ATTR_CDECL
+   84              | . ATTR_STDCALL
+
+    ID            сдвиг, и переход в состояние 48
+    ATTR_CDECL    сдвиг, и переход в состояние 49
+    ATTR_STDCALL  сдвиг, и переход в состояние 50
+    LPAREN        сдвиг, и переход в состояние 51
+    STAR          сдвиг, и переход в состояние 52
+    ADDR          сдвиг, и переход в состояние 53
+
+    $default  вывод с использованием правила 57 (maybe_declarator_seq)
+
+    maybe_declarator_seq  переход в состояние 54
+    declarator_seq        переход в состояние 55
+    declarator            переход в состояние 56
+    declarator_arg        переход в состояние 57
+    call_modifier         переход в состояние 58
+
+
+состояние 34
+
+   19 type_ref: attributed_type .
+
+    $default  вывод с использованием правила 19 (type_ref)
+
+
+состояние 35
+
+   20 attributed_type: internal_type .  [$end, ID, ATTR_CDECL, ATTR_STDCALL, T_PRAGMA_PACK, SEMICOLON, COMMA, LPAREN, RPAREN, STAR, ADDR]
+   24 internal_type: internal_type . attr
+   25              | internal_type . declspec
+   26 attr: . T_SIGNED
+   27     | . T_UNSIGNED
+   28     | . T_CHAR
+   29     | . T_INT8
+   30     | . T_WCHAR_T
+   31     | . T_SHORT
+   32     | . T_INT16
+   33     | . T_INT32
+   34     | . T_INT
+   35     | . T_INT64
+   36     | . T_LONG
+   37     | . T_LONGLONG
+   38     | . T_DOUBLE
+   39     | . T_FLOAT
+   40     | . T_VOID
+   46 declspec: . ATTR_DECLSPEC LPAREN ID RPAREN
+   47         | . ATTR_DECLSPEC LPAREN ID LPAREN NUM RPAREN RPAREN
+
+    ATTR_DECLSPEC  сдвиг, и переход в состояние 5
+    T_UNSIGNED     сдвиг, и переход в состояние 7
+    T_SIGNED       сдвиг, и переход в состояние 8
+    T_INT8         сдвиг, и переход в состояние 9
+    T_INT16        сдвиг, и переход в состояние 10
+    T_INT32        сдвиг, и переход в состояние 11
+    T_INT64        сдвиг, и переход в состояние 12
+    T_DOUBLE       сдвиг, и переход в состояние 13
+    T_FLOAT        сдвиг, и переход в состояние 14
+    T_CHAR         сдвиг, и переход в состояние 15
+    T_WCHAR_T      сдвиг, и переход в состояние 16
+    T_INT          сдвиг, и переход в состояние 17
+    T_LONG         сдвиг, и переход в состояние 18
+    T_LONGLONG     сдвиг, и переход в состояние 19
+    T_SHORT        сдвиг, и переход в состояние 20
+    T_VOID         сдвиг, и переход в состояние 21
+
+    $default  вывод с использованием правила 20 (attributed_type)
+
+    attr      переход в состояние 59
+    declspec  переход в состояние 60
+
+
+состояние 36
+
+   23 internal_type: attr .
+
+    $default  вывод с использованием правила 23 (internal_type)
+
+
+состояние 37
+
+   21 attributed_type: user_type .  [$end, ID, ATTR_CDECL, ATTR_STDCALL, T_PRAGMA_PACK, SEMICOLON, COMMA, LPAREN, RPAREN, STAR, ADDR]
+   43 user_type: user_type . declspec
+   46 declspec: . ATTR_DECLSPEC LPAREN ID RPAREN
+   47         | . ATTR_DECLSPEC LPAREN ID LPAREN NUM RPAREN RPAREN
+
+    ATTR_DECLSPEC  сдвиг, и переход в состояние 5
+
+    $default  вывод с использованием правила 21 (attributed_type)
+
+    declspec  переход в состояние 61
+
+
+состояние 38
+
+   42 user_type: struct_type .
+
+    $default  вывод с использованием правила 42 (user_type)
+
+
+состояние 39
+
+   20 attributed_type: . internal_type
+   21                | . user_type
+   22                | . declspec attributed_type
+   22                | declspec . attributed_type
+   23 internal_type: . attr
+   24              | . internal_type attr
+   25              | . internal_type declspec
+   26 attr: . T_SIGNED
+   27     | . T_UNSIGNED
+   28     | . T_CHAR
+   29     | . T_INT8
+   30     | . T_WCHAR_T
+   31     | . T_SHORT
+   32     | . T_INT16
+   33     | . T_INT32
+   34     | . T_INT
+   35     | . T_INT64
+   36     | . T_LONG
+   37     | . T_LONGLONG
+   38     | . T_DOUBLE
+   39     | . T_FLOAT
+   40     | . T_VOID
+   41 user_type: . ID
+   42          | . struct_type
+   43          | . user_type declspec
+   44 struct_type: . struct ID
+   45            | . struct struct_tag LCURL var_decl_seq RCURL
+   46 declspec: . ATTR_DECLSPEC LPAREN ID RPAREN
+   47         | . ATTR_DECLSPEC LPAREN ID LPAREN NUM RPAREN RPAREN
+   48 struct: . T_STRUCT
+   49       | . T_UNION
+
+    ID             сдвиг, и переход в состояние 1
+    T_STRUCT       сдвиг, и переход в состояние 3
+    T_UNION        сдвиг, и переход в состояние 4
+    ATTR_DECLSPEC  сдвиг, и переход в состояние 5
+    T_UNSIGNED     сдвиг, и переход в состояние 7
+    T_SIGNED       сдвиг, и переход в состояние 8
+    T_INT8         сдвиг, и переход в состояние 9
+    T_INT16        сдвиг, и переход в состояние 10
+    T_INT32        сдвиг, и переход в состояние 11
+    T_INT64        сдвиг, и переход в состояние 12
+    T_DOUBLE       сдвиг, и переход в состояние 13
+    T_FLOAT        сдвиг, и переход в состояние 14
+    T_CHAR         сдвиг, и переход в состояние 15
+    T_WCHAR_T      сдвиг, и переход в состояние 16
+    T_INT          сдвиг, и переход в состояние 17
+    T_LONG         сдвиг, и переход в состояние 18
+    T_LONGLONG     сдвиг, и переход в состояние 19
+    T_SHORT        сдвиг, и переход в состояние 20
+    T_VOID         сдвиг, и переход в состояние 21
+
+    attributed_type  переход в состояние 62
+    internal_type    переход в состояние 35
+    attr             переход в состояние 36
+    user_type        переход в состояние 37
+    struct_type      переход в состояние 38
+    declspec         переход в состояние 39
+    struct           переход в состояние 40
+
+
+состояние 40
+
+   44 struct_type: struct . ID
+   45            | struct . struct_tag LCURL var_decl_seq RCURL
+   46 declspec: . ATTR_DECLSPEC LPAREN ID RPAREN
+   47         | . ATTR_DECLSPEC LPAREN ID LPAREN NUM RPAREN RPAREN
+   50 struct_tag: .  [LCURL]
+   51           | . ID
+   52           | . declspec
+   53           | . declspec ID
+
+    ID             сдвиг, и переход в состояние 63
+    ATTR_DECLSPEC  сдвиг, и переход в состояние 5
+
+    $default  вывод с использованием правила 50 (struct_tag)
+
+    declspec    переход в состояние 64
+    struct_tag  переход в состояние 65
+
+
+состояние 41
+
+   17 typedef: T_TYPEDEF type_ref . maybe_declarator_seq
+   57 maybe_declarator_seq: .  [$end, T_PRAGMA_PACK, SEMICOLON]
+   58                     | . declarator_seq
+   59 declarator_seq: . declarator
+   60               | . declarator_seq COMMA declarator
+   61 declarator: . declarator_arg
+   62           | . LPAREN declarator RPAREN LPAREN maybe_param_seq RPAREN
+   63           | . ID LBRACKET array_bound RBRACKET
+   64           | . STAR declarator
+   65           | . ADDR declarator
+   66           | . call_modifier declarator
+   79 declarator_arg: . ID
+   80               | . ID LPAREN maybe_param_seq RPAREN
+   83 call_modifier: . ATTR_CDECL
+   84              | . ATTR_STDCALL
+
+    ID            сдвиг, и переход в состояние 48
+    ATTR_CDECL    сдвиг, и переход в состояние 49
+    ATTR_STDCALL  сдвиг, и переход в состояние 50
+    LPAREN        сдвиг, и переход в состояние 51
+    STAR          сдвиг, и переход в состояние 52
+    ADDR          сдвиг, и переход в состояние 53
+
+    $default  вывод с использованием правила 57 (maybe_declarator_seq)
+
+    maybe_declarator_seq  переход в состояние 66
+    declarator_seq        переход в состояние 55
+    declarator            переход в состояние 56
+    declarator_arg        переход в состояние 57
+    call_modifier         переход в состояние 58
+
+
+состояние 42
+
+   46 declspec: ATTR_DECLSPEC LPAREN . ID RPAREN
+   47         | ATTR_DECLSPEC LPAREN . ID LPAREN NUM RPAREN RPAREN
+
+    ID  сдвиг, и переход в состояние 67
+
+
+состояние 43
+
+   13 pragma_pack: T_PRAGMA_PACK LPAREN . NUM RPAREN
+   14            | T_PRAGMA_PACK LPAREN . ID RPAREN
+   15            | T_PRAGMA_PACK LPAREN . ID COMMA NUM RPAREN
+
+    ID   сдвиг, и переход в состояние 68
+    NUM  сдвиг, и переход в состояние 69
+
+
+состояние 44
+
+   18 namedef2: TEST_RULE type_ref . maybe_declarator_seq
+   57 maybe_declarator_seq: .  [$end, T_PRAGMA_PACK, SEMICOLON]
+   58                     | . declarator_seq
+   59 declarator_seq: . declarator
+   60               | . declarator_seq COMMA declarator
+   61 declarator: . declarator_arg
+   62           | . LPAREN declarator RPAREN LPAREN maybe_param_seq RPAREN
+   63           | . ID LBRACKET array_bound RBRACKET
+   64           | . STAR declarator
+   65           | . ADDR declarator
+   66           | . call_modifier declarator
+   79 declarator_arg: . ID
+   80               | . ID LPAREN maybe_param_seq RPAREN
+   83 call_modifier: . ATTR_CDECL
+   84              | . ATTR_STDCALL
+
+    ID            сдвиг, и переход в состояние 48
+    ATTR_CDECL    сдвиг, и переход в состояние 49
+    ATTR_STDCALL  сдвиг, и переход в состояние 50
+    LPAREN        сдвиг, и переход в состояние 51
+    STAR          сдвиг, и переход в состояние 52
+    ADDR          сдвиг, и переход в состояние 53
+
+    $default  вывод с использованием правила 57 (maybe_declarator_seq)
+
+    maybe_declarator_seq  переход в состояние 70
+    declarator_seq        переход в состояние 55
+    declarator            переход в состояние 56
+    declarator_arg        переход в состояние 57
+    call_modifier         переход в состояние 58
+
+
+состояние 45
+
+    0 $accept: prog $end .
+
+    $default  accept
+
+
+состояние 46
+
+    5 decl_seq: decl_seq sep . decl
+    6         | decl_seq sep .  [$end, T_PRAGMA_PACK, SEMICOLON]
+    9 decl: . typedef
+   10     | . namedef
+   11     | . namedef2
+   16 namedef: . type_ref maybe_declarator_seq
+   17 typedef: . T_TYPEDEF type_ref maybe_declarator_seq
+   18 namedef2: . TEST_RULE type_ref maybe_declarator_seq
+   19 type_ref: . attributed_type
+   20 attributed_type: . internal_type
+   21                | . user_type
+   22                | . declspec attributed_type
+   23 internal_type: . attr
+   24              | . internal_type attr
+   25              | . internal_type declspec
+   26 attr: . T_SIGNED
+   27     | . T_UNSIGNED
+   28     | . T_CHAR
+   29     | . T_INT8
+   30     | . T_WCHAR_T
+   31     | . T_SHORT
+   32     | . T_INT16
+   33     | . T_INT32
+   34     | . T_INT
+   35     | . T_INT64
+   36     | . T_LONG
+   37     | . T_LONGLONG
+   38     | . T_DOUBLE
+   39     | . T_FLOAT
+   40     | . T_VOID
+   41 user_type: . ID
+   42          | . struct_type
+   43          | . user_type declspec
+   44 struct_type: . struct ID
+   45            | . struct struct_tag LCURL var_decl_seq RCURL
+   46 declspec: . ATTR_DECLSPEC LPAREN ID RPAREN
+   47         | . ATTR_DECLSPEC LPAREN ID LPAREN NUM RPAREN RPAREN
+   48 struct: . T_STRUCT
+   49       | . T_UNION
+
+    ID             сдвиг, и переход в состояние 1
+    T_TYPEDEF      сдвиг, и переход в состояние 2
+    T_STRUCT       сдвиг, и переход в состояние 3
+    T_UNION        сдвиг, и переход в состояние 4
+    ATTR_DECLSPEC  сдвиг, и переход в состояние 5
+    T_UNSIGNED     сдвиг, и переход в состояние 7
+    T_SIGNED       сдвиг, и переход в состояние 8
+    T_INT8         сдвиг, и переход в состояние 9
+    T_INT16        сдвиг, и переход в состояние 10
+    T_INT32        сдвиг, и переход в состояние 11
+    T_INT64        сдвиг, и переход в состояние 12
+    T_DOUBLE       сдвиг, и переход в состояние 13
+    T_FLOAT        сдвиг, и переход в состояние 14
+    T_CHAR         сдвиг, и переход в состояние 15
+    T_WCHAR_T      сдвиг, и переход в состояние 16
+    T_INT          сдвиг, и переход в состояние 17
+    T_LONG         сдвиг, и переход в состояние 18
+    T_LONGLONG     сдвиг, и переход в состояние 19
+    T_SHORT        сдвиг, и переход в состояние 20
+    T_VOID         сдвиг, и переход в состояние 21
+    TEST_RULE      сдвиг, и переход в состояние 23
+
+    $default  вывод с использованием правила 6 (decl_seq)
+
+    decl             переход в состояние 71
+    namedef          переход в состояние 30
+    typedef          переход в состояние 31
+    namedef2         переход в состояние 32
+    type_ref         переход в состояние 33
+    attributed_type  переход в состояние 34
+    internal_type    переход в состояние 35
+    attr             переход в состояние 36
+    user_type        переход в состояние 37
+    struct_type      переход в состояние 38
+    declspec         переход в состояние 39
+    struct           переход в состояние 40
+
+
+состояние 47
+
+    3 decl_seq: sep decl .
+
+    $default  вывод с использованием правила 3 (decl_seq)
+
+
+состояние 48
+
+   63 declarator: ID . LBRACKET array_bound RBRACKET
+   79 declarator_arg: ID .  [$end, T_PRAGMA_PACK, SEMICOLON, COMMA, RPAREN]
+   80               | ID . LPAREN maybe_param_seq RPAREN
+
+    LPAREN    сдвиг, и переход в состояние 72
+    LBRACKET  сдвиг, и переход в состояние 73
+
+    $default  вывод с использованием правила 79 (declarator_arg)
+
+
+состояние 49
+
+   83 call_modifier: ATTR_CDECL .
+
+    $default  вывод с использованием правила 83 (call_modifier)
+
+
+состояние 50
+
+   84 call_modifier: ATTR_STDCALL .
+
+    $default  вывод с использованием правила 84 (call_modifier)
+
+
+состояние 51
+
+   61 declarator: . declarator_arg
+   62           | . LPAREN declarator RPAREN LPAREN maybe_param_seq RPAREN
+   62           | LPAREN . declarator RPAREN LPAREN maybe_param_seq RPAREN
+   63           | . ID LBRACKET array_bound RBRACKET
+   64           | . STAR declarator
+   65           | . ADDR declarator
+   66           | . call_modifier declarator
+   79 declarator_arg: . ID
+   80               | . ID LPAREN maybe_param_seq RPAREN
+   83 call_modifier: . ATTR_CDECL
+   84              | . ATTR_STDCALL
+
+    ID            сдвиг, и переход в состояние 48
+    ATTR_CDECL    сдвиг, и переход в состояние 49
+    ATTR_STDCALL  сдвиг, и переход в состояние 50
+    LPAREN        сдвиг, и переход в состояние 51
+    STAR          сдвиг, и переход в состояние 52
+    ADDR          сдвиг, и переход в состояние 53
+
+    declarator      переход в состояние 74
+    declarator_arg  переход в состояние 57
+    call_modifier   переход в состояние 58
+
+
+состояние 52
+
+   61 declarator: . declarator_arg
+   62           | . LPAREN declarator RPAREN LPAREN maybe_param_seq RPAREN
+   63           | . ID LBRACKET array_bound RBRACKET
+   64           | . STAR declarator
+   64           | STAR . declarator
+   65           | . ADDR declarator
+   66           | . call_modifier declarator
+   79 declarator_arg: . ID
+   80               | . ID LPAREN maybe_param_seq RPAREN
+   83 call_modifier: . ATTR_CDECL
+   84              | . ATTR_STDCALL
+
+    ID            сдвиг, и переход в состояние 48
+    ATTR_CDECL    сдвиг, и переход в состояние 49
+    ATTR_STDCALL  сдвиг, и переход в состояние 50
+    LPAREN        сдвиг, и переход в состояние 51
+    STAR          сдвиг, и переход в состояние 52
+    ADDR          сдвиг, и переход в состояние 53
+
+    declarator      переход в состояние 75
+    declarator_arg  переход в состояние 57
+    call_modifier   переход в состояние 58
+
+
+состояние 53
+
+   61 declarator: . declarator_arg
+   62           | . LPAREN declarator RPAREN LPAREN maybe_param_seq RPAREN
+   63           | . ID LBRACKET array_bound RBRACKET
+   64           | . STAR declarator
+   65           | . ADDR declarator
+   65           | ADDR . declarator
+   66           | . call_modifier declarator
+   79 declarator_arg: . ID
+   80               | . ID LPAREN maybe_param_seq RPAREN
+   83 call_modifier: . ATTR_CDECL
+   84              | . ATTR_STDCALL
+
+    ID            сдвиг, и переход в состояние 48
+    ATTR_CDECL    сдвиг, и переход в состояние 49
+    ATTR_STDCALL  сдвиг, и переход в состояние 50
+    LPAREN        сдвиг, и переход в состояние 51
+    STAR          сдвиг, и переход в состояние 52
+    ADDR          сдвиг, и переход в состояние 53
+
+    declarator      переход в состояние 76
+    declarator_arg  переход в состояние 57
+    call_modifier   переход в состояние 58
+
+
+состояние 54
+
+   16 namedef: type_ref maybe_declarator_seq .
+
+    $default  вывод с использованием правила 16 (namedef)
+
+
+состояние 55
+
+   58 maybe_declarator_seq: declarator_seq .  [$end, T_PRAGMA_PACK, SEMICOLON]
+   60 declarator_seq: declarator_seq . COMMA declarator
+
+    COMMA  сдвиг, и переход в состояние 77
+
+    $default  вывод с использованием правила 58 (maybe_declarator_seq)
+
+
+состояние 56
+
+   59 declarator_seq: declarator .
+
+    $default  вывод с использованием правила 59 (declarator_seq)
+
+
+состояние 57
+
+   61 declarator: declarator_arg .
+
+    $default  вывод с использованием правила 61 (declarator)
+
+
+состояние 58
+
+   61 declarator: . declarator_arg
+   62           | . LPAREN declarator RPAREN LPAREN maybe_param_seq RPAREN
+   63           | . ID LBRACKET array_bound RBRACKET
+   64           | . STAR declarator
+   65           | . ADDR declarator
+   66           | . call_modifier declarator
+   66           | call_modifier . declarator
+   79 declarator_arg: . ID
+   80               | . ID LPAREN maybe_param_seq RPAREN
+   83 call_modifier: . ATTR_CDECL
+   84              | . ATTR_STDCALL
+
+    ID            сдвиг, и переход в состояние 48
+    ATTR_CDECL    сдвиг, и переход в состояние 49
+    ATTR_STDCALL  сдвиг, и переход в состояние 50
+    LPAREN        сдвиг, и переход в состояние 51
+    STAR          сдвиг, и переход в состояние 52
+    ADDR          сдвиг, и переход в состояние 53
+
+    declarator      переход в состояние 78
+    declarator_arg  переход в состояние 57
+    call_modifier   переход в состояние 58
+
+
+состояние 59
+
+   24 internal_type: internal_type attr .
+
+    $default  вывод с использованием правила 24 (internal_type)
+
+
+состояние 60
+
+   25 internal_type: internal_type declspec .
+
+    $default  вывод с использованием правила 25 (internal_type)
+
+
+состояние 61
+
+   43 user_type: user_type declspec .
+
+    $default  вывод с использованием правила 43 (user_type)
+
+
+состояние 62
+
+   22 attributed_type: declspec attributed_type .
+
+    $default  вывод с использованием правила 22 (attributed_type)
+
+
+состояние 63
+
+   44 struct_type: struct ID .  [$end, ID, ATTR_CDECL, ATTR_STDCALL, ATTR_DECLSPEC, T_PRAGMA_PACK, SEMICOLON, COMMA, LPAREN, RPAREN, STAR, ADDR]
+   51 struct_tag: ID .  [LCURL]
+
+    LCURL     вывод с использованием правила 51 (struct_tag)
+    $default  вывод с использованием правила 44 (struct_type)
+
+
+состояние 64
+
+   52 struct_tag: declspec .  [LCURL]
+   53           | declspec . ID
+
+    ID  сдвиг, и переход в состояние 79
+
+    $default  вывод с использованием правила 52 (struct_tag)
+
+
+состояние 65
+
+   45 struct_type: struct struct_tag . LCURL var_decl_seq RCURL
+
+    LCURL  сдвиг, и переход в состояние 80
+
+
+состояние 66
+
+   17 typedef: T_TYPEDEF type_ref maybe_declarator_seq .
+
+    $default  вывод с использованием правила 17 (typedef)
+
+
+состояние 67
+
+   46 declspec: ATTR_DECLSPEC LPAREN ID . RPAREN
+   47         | ATTR_DECLSPEC LPAREN ID . LPAREN NUM RPAREN RPAREN
+
+    LPAREN  сдвиг, и переход в состояние 81
+    RPAREN  сдвиг, и переход в состояние 82
+
+
+состояние 68
+
+   14 pragma_pack: T_PRAGMA_PACK LPAREN ID . RPAREN
+   15            | T_PRAGMA_PACK LPAREN ID . COMMA NUM RPAREN
+
+    COMMA   сдвиг, и переход в состояние 83
+    RPAREN  сдвиг, и переход в состояние 84
+
+
+состояние 69
+
+   13 pragma_pack: T_PRAGMA_PACK LPAREN NUM . RPAREN
+
+    RPAREN  сдвиг, и переход в состояние 85
+
+
+состояние 70
+
+   18 namedef2: TEST_RULE type_ref maybe_declarator_seq .
+
+    $default  вывод с использованием правила 18 (namedef2)
+
+
+состояние 71
+
+    5 decl_seq: decl_seq sep decl .
+
+    $default  вывод с использованием правила 5 (decl_seq)
+
+
+состояние 72
+
+   19 type_ref: . attributed_type
+   20 attributed_type: . internal_type
+   21                | . user_type
+   22                | . declspec attributed_type
+   23 internal_type: . attr
+   24              | . internal_type attr
+   25              | . internal_type declspec
+   26 attr: . T_SIGNED
+   27     | . T_UNSIGNED
+   28     | . T_CHAR
+   29     | . T_INT8
+   30     | . T_WCHAR_T
+   31     | . T_SHORT
+   32     | . T_INT16
+   33     | . T_INT32
+   34     | . T_INT
+   35     | . T_INT64
+   36     | . T_LONG
+   37     | . T_LONGLONG
+   38     | . T_DOUBLE
+   39     | . T_FLOAT
+   40     | . T_VOID
+   41 user_type: . ID
+   42          | . struct_type
+   43          | . user_type declspec
+   44 struct_type: . struct ID
+   45            | . struct struct_tag LCURL var_decl_seq RCURL
+   46 declspec: . ATTR_DECLSPEC LPAREN ID RPAREN
+   47         | . ATTR_DECLSPEC LPAREN ID LPAREN NUM RPAREN RPAREN
+   48 struct: . T_STRUCT
+   49       | . T_UNION
+   67 maybe_param_seq: .  [RPAREN]
+   68                | . param_seq
+   69 param_seq: . param
+   70          | . param_seq COMMA param
+   71 param: . type_ref param_declarator
+   80 declarator_arg: ID LPAREN . maybe_param_seq RPAREN
+
+    ID             сдвиг, и переход в состояние 1
+    T_STRUCT       сдвиг, и переход в состояние 3
+    T_UNION        сдвиг, и переход в состояние 4
+    ATTR_DECLSPEC  сдвиг, и переход в состояние 5
+    T_UNSIGNED     сдвиг, и переход в состояние 7
+    T_SIGNED       сдвиг, и переход в состояние 8
+    T_INT8         сдвиг, и переход в состояние 9
+    T_INT16        сдвиг, и переход в состояние 10
+    T_INT32        сдвиг, и переход в состояние 11
+    T_INT64        сдвиг, и переход в состояние 12
+    T_DOUBLE       сдвиг, и переход в состояние 13
+    T_FLOAT        сдвиг, и переход в состояние 14
+    T_CHAR         сдвиг, и переход в состояние 15
+    T_WCHAR_T      сдвиг, и переход в состояние 16
+    T_INT          сдвиг, и переход в состояние 17
+    T_LONG         сдвиг, и переход в состояние 18
+    T_LONGLONG     сдвиг, и переход в состояние 19
+    T_SHORT        сдвиг, и переход в состояние 20
+    T_VOID         сдвиг, и переход в состояние 21
+
+    $default  вывод с использованием правила 67 (maybe_param_seq)
+
+    type_ref         переход в состояние 86
+    attributed_type  переход в состояние 34
+    internal_type    переход в состояние 35
+    attr             переход в состояние 36
+    user_type        переход в состояние 37
+    struct_type      переход в состояние 38
+    declspec         переход в состояние 39
+    struct           переход в состояние 40
+    maybe_param_seq  переход в состояние 87
+    param_seq        переход в состояние 88
+    param            переход в состояние 89
+
+
+состояние 73
+
+   63 declarator: ID LBRACKET . array_bound RBRACKET
+   81 array_bound: .  [RBRACKET]
+   82            | . NUM
+
+    NUM  сдвиг, и переход в состояние 90
+
+    $default  вывод с использованием правила 81 (array_bound)
+
+    array_bound  переход в состояние 91
+
+
+состояние 74
+
+   62 declarator: LPAREN declarator . RPAREN LPAREN maybe_param_seq RPAREN
+
+    RPAREN  сдвиг, и переход в состояние 92
+
+
+состояние 75
+
+   64 declarator: STAR declarator .
+
+    $default  вывод с использованием правила 64 (declarator)
+
+
+состояние 76
+
+   65 declarator: ADDR declarator .
+
+    $default  вывод с использованием правила 65 (declarator)
+
+
+состояние 77
+
+   60 declarator_seq: declarator_seq COMMA . declarator
+   61 declarator: . declarator_arg
+   62           | . LPAREN declarator RPAREN LPAREN maybe_param_seq RPAREN
+   63           | . ID LBRACKET array_bound RBRACKET
+   64           | . STAR declarator
+   65           | . ADDR declarator
+   66           | . call_modifier declarator
+   79 declarator_arg: . ID
+   80               | . ID LPAREN maybe_param_seq RPAREN
+   83 call_modifier: . ATTR_CDECL
+   84              | . ATTR_STDCALL
+
+    ID            сдвиг, и переход в состояние 48
+    ATTR_CDECL    сдвиг, и переход в состояние 49
+    ATTR_STDCALL  сдвиг, и переход в состояние 50
+    LPAREN        сдвиг, и переход в состояние 51
+    STAR          сдвиг, и переход в состояние 52
+    ADDR          сдвиг, и переход в состояние 53
+
+    declarator      переход в состояние 93
+    declarator_arg  переход в состояние 57
+    call_modifier   переход в состояние 58
+
+
+состояние 78
+
+   66 declarator: call_modifier declarator .
+
+    $default  вывод с использованием правила 66 (declarator)
+
+
+состояние 79
+
+   53 struct_tag: declspec ID .
+
+    $default  вывод с использованием правила 53 (struct_tag)
+
+
+состояние 80
+
+   45 struct_type: struct struct_tag LCURL . var_decl_seq RCURL
+   54 var_decl_seq: .
+   55             | . var_decl_seq var_decl SEMICOLON
+
+    $default  вывод с использованием правила 54 (var_decl_seq)
+
+    var_decl_seq  переход в состояние 94
+
+
+состояние 81
+
+   47 declspec: ATTR_DECLSPEC LPAREN ID LPAREN . NUM RPAREN RPAREN
+
+    NUM  сдвиг, и переход в состояние 95
+
+
+состояние 82
+
+   46 declspec: ATTR_DECLSPEC LPAREN ID RPAREN .
+
+    $default  вывод с использованием правила 46 (declspec)
+
+
+состояние 83
+
+   15 pragma_pack: T_PRAGMA_PACK LPAREN ID COMMA . NUM RPAREN
+
+    NUM  сдвиг, и переход в состояние 96
+
+
+состояние 84
+
+   14 pragma_pack: T_PRAGMA_PACK LPAREN ID RPAREN .
+
+    $default  вывод с использованием правила 14 (pragma_pack)
+
+
+состояние 85
+
+   13 pragma_pack: T_PRAGMA_PACK LPAREN NUM RPAREN .
+
+    $default  вывод с использованием правила 13 (pragma_pack)
+
+
+состояние 86
+
+   71 param: type_ref . param_declarator
+   72 param_declarator: .  [COMMA, RPAREN]
+   73                 | . declarator_arg
+   74                 | . LPAREN param_declarator RPAREN LPAREN maybe_param_seq RPAREN
+   75                 | . ID LBRACKET array_bound RBRACKET
+   76                 | . STAR param_declarator
+   77                 | . ADDR param_declarator
+   78                 | . call_modifier param_declarator
+   79 declarator_arg: . ID
+   80               | . ID LPAREN maybe_param_seq RPAREN
+   83 call_modifier: . ATTR_CDECL
+   84              | . ATTR_STDCALL
+
+    ID            сдвиг, и переход в состояние 97
+    ATTR_CDECL    сдвиг, и переход в состояние 49
+    ATTR_STDCALL  сдвиг, и переход в состояние 50
+    LPAREN        сдвиг, и переход в состояние 98
+    STAR          сдвиг, и переход в состояние 99
+    ADDR          сдвиг, и переход в состояние 100
+
+    $default  вывод с использованием правила 72 (param_declarator)
+
+    param_declarator  переход в состояние 101
+    declarator_arg    переход в состояние 102
+    call_modifier     переход в состояние 103
+
+
+состояние 87
+
+   80 declarator_arg: ID LPAREN maybe_param_seq . RPAREN
+
+    RPAREN  сдвиг, и переход в состояние 104
+
+
+состояние 88
+
+   68 maybe_param_seq: param_seq .  [RPAREN]
+   70 param_seq: param_seq . COMMA param
+
+    COMMA  сдвиг, и переход в состояние 105
+
+    $default  вывод с использованием правила 68 (maybe_param_seq)
+
+
+состояние 89
+
+   69 param_seq: param .
+
+    $default  вывод с использованием правила 69 (param_seq)
+
+
+состояние 90
+
+   82 array_bound: NUM .
+
+    $default  вывод с использованием правила 82 (array_bound)
+
+
+состояние 91
+
+   63 declarator: ID LBRACKET array_bound . RBRACKET
+
+    RBRACKET  сдвиг, и переход в состояние 106
+
+
+состояние 92
+
+   62 declarator: LPAREN declarator RPAREN . LPAREN maybe_param_seq RPAREN
+
+    LPAREN  сдвиг, и переход в состояние 107
+
+
+состояние 93
+
+   60 declarator_seq: declarator_seq COMMA declarator .
+
+    $default  вывод с использованием правила 60 (declarator_seq)
+
+
+состояние 94
+
+   19 type_ref: . attributed_type
+   20 attributed_type: . internal_type
+   21                | . user_type
+   22                | . declspec attributed_type
+   23 internal_type: . attr
+   24              | . internal_type attr
+   25              | . internal_type declspec
+   26 attr: . T_SIGNED
+   27     | . T_UNSIGNED
+   28     | . T_CHAR
+   29     | . T_INT8
+   30     | . T_WCHAR_T
+   31     | . T_SHORT
+   32     | . T_INT16
+   33     | . T_INT32
+   34     | . T_INT
+   35     | . T_INT64
+   36     | . T_LONG
+   37     | . T_LONGLONG
+   38     | . T_DOUBLE
+   39     | . T_FLOAT
+   40     | . T_VOID
+   41 user_type: . ID
+   42          | . struct_type
+   43          | . user_type declspec
+   44 struct_type: . struct ID
+   45            | . struct struct_tag LCURL var_decl_seq RCURL
+   45            | struct struct_tag LCURL var_decl_seq . RCURL
+   46 declspec: . ATTR_DECLSPEC LPAREN ID RPAREN
+   47         | . ATTR_DECLSPEC LPAREN ID LPAREN NUM RPAREN RPAREN
+   48 struct: . T_STRUCT
+   49       | . T_UNION
+   55 var_decl_seq: var_decl_seq . var_decl SEMICOLON
+   56 var_decl: . type_ref declarator_seq
+
+    ID             сдвиг, и переход в состояние 1
+    T_STRUCT       сдвиг, и переход в состояние 3
+    T_UNION        сдвиг, и переход в состояние 4
+    ATTR_DECLSPEC  сдвиг, и переход в состояние 5
+    T_UNSIGNED     сдвиг, и переход в состояние 7
+    T_SIGNED       сдвиг, и переход в состояние 8
+    T_INT8         сдвиг, и переход в состояние 9
+    T_INT16        сдвиг, и переход в состояние 10
+    T_INT32        сдвиг, и переход в состояние 11
+    T_INT64        сдвиг, и переход в состояние 12
+    T_DOUBLE       сдвиг, и переход в состояние 13
+    T_FLOAT        сдвиг, и переход в состояние 14
+    T_CHAR         сдвиг, и переход в состояние 15
+    T_WCHAR_T      сдвиг, и переход в состояние 16
+    T_INT          сдвиг, и переход в состояние 17
+    T_LONG         сдвиг, и переход в состояние 18
+    T_LONGLONG     сдвиг, и переход в состояние 19
+    T_SHORT        сдвиг, и переход в состояние 20
+    T_VOID         сдвиг, и переход в состояние 21
+    RCURL          сдвиг, и переход в состояние 108
+
+    type_ref         переход в состояние 109
+    attributed_type  переход в состояние 34
+    internal_type    переход в состояние 35
+    attr             переход в состояние 36
+    user_type        переход в состояние 37
+    struct_type      переход в состояние 38
+    declspec         переход в состояние 39
+    struct           переход в состояние 40
+    var_decl         переход в состояние 110
+
+
+состояние 95
+
+   47 declspec: ATTR_DECLSPEC LPAREN ID LPAREN NUM . RPAREN RPAREN
+
+    RPAREN  сдвиг, и переход в состояние 111
+
+
+состояние 96
+
+   15 pragma_pack: T_PRAGMA_PACK LPAREN ID COMMA NUM . RPAREN
+
+    RPAREN  сдвиг, и переход в состояние 112
+
+
+состояние 97
+
+   75 param_declarator: ID . LBRACKET array_bound RBRACKET
+   79 declarator_arg: ID .  [COMMA, RPAREN]
+   80               | ID . LPAREN maybe_param_seq RPAREN
+
+    LPAREN    сдвиг, и переход в состояние 72
+    LBRACKET  сдвиг, и переход в состояние 113
+
+    $default  вывод с использованием правила 79 (declarator_arg)
+
+
+состояние 98
+
+   72 param_declarator: .  [RPAREN]
+   73                 | . declarator_arg
+   74                 | . LPAREN param_declarator RPAREN LPAREN maybe_param_seq RPAREN
+   74                 | LPAREN . param_declarator RPAREN LPAREN maybe_param_seq RPAREN
+   75                 | . ID LBRACKET array_bound RBRACKET
+   76                 | . STAR param_declarator
+   77                 | . ADDR param_declarator
+   78                 | . call_modifier param_declarator
+   79 declarator_arg: . ID
+   80               | . ID LPAREN maybe_param_seq RPAREN
+   83 call_modifier: . ATTR_CDECL
+   84              | . ATTR_STDCALL
+
+    ID            сдвиг, и переход в состояние 97
+    ATTR_CDECL    сдвиг, и переход в состояние 49
+    ATTR_STDCALL  сдвиг, и переход в состояние 50
+    LPAREN        сдвиг, и переход в состояние 98
+    STAR          сдвиг, и переход в состояние 99
+    ADDR          сдвиг, и переход в состояние 100
+
+    $default  вывод с использованием правила 72 (param_declarator)
+
+    param_declarator  переход в состояние 114
+    declarator_arg    переход в состояние 102
+    call_modifier     переход в состояние 103
+
+
+состояние 99
+
+   72 param_declarator: .  [COMMA, RPAREN]
+   73                 | . declarator_arg
+   74                 | . LPAREN param_declarator RPAREN LPAREN maybe_param_seq RPAREN
+   75                 | . ID LBRACKET array_bound RBRACKET
+   76                 | . STAR param_declarator
+   76                 | STAR . param_declarator
+   77                 | . ADDR param_declarator
+   78                 | . call_modifier param_declarator
+   79 declarator_arg: . ID
+   80               | . ID LPAREN maybe_param_seq RPAREN
+   83 call_modifier: . ATTR_CDECL
+   84              | . ATTR_STDCALL
+
+    ID            сдвиг, и переход в состояние 97
+    ATTR_CDECL    сдвиг, и переход в состояние 49
+    ATTR_STDCALL  сдвиг, и переход в состояние 50
+    LPAREN        сдвиг, и переход в состояние 98
+    STAR          сдвиг, и переход в состояние 99
+    ADDR          сдвиг, и переход в состояние 100
+
+    $default  вывод с использованием правила 72 (param_declarator)
+
+    param_declarator  переход в состояние 115
+    declarator_arg    переход в состояние 102
+    call_modifier     переход в состояние 103
+
+
+состояние 100
+
+   72 param_declarator: .  [COMMA, RPAREN]
+   73                 | . declarator_arg
+   74                 | . LPAREN param_declarator RPAREN LPAREN maybe_param_seq RPAREN
+   75                 | . ID LBRACKET array_bound RBRACKET
+   76                 | . STAR param_declarator
+   77                 | . ADDR param_declarator
+   77                 | ADDR . param_declarator
+   78                 | . call_modifier param_declarator
+   79 declarator_arg: . ID
+   80               | . ID LPAREN maybe_param_seq RPAREN
+   83 call_modifier: . ATTR_CDECL
+   84              | . ATTR_STDCALL
+
+    ID            сдвиг, и переход в состояние 97
+    ATTR_CDECL    сдвиг, и переход в состояние 49
+    ATTR_STDCALL  сдвиг, и переход в состояние 50
+    LPAREN        сдвиг, и переход в состояние 98
+    STAR          сдвиг, и переход в состояние 99
+    ADDR          сдвиг, и переход в состояние 100
+
+    $default  вывод с использованием правила 72 (param_declarator)
+
+    param_declarator  переход в состояние 116
+    declarator_arg    переход в состояние 102
+    call_modifier     переход в состояние 103
+
+
+состояние 101
+
+   71 param: type_ref param_declarator .
+
+    $default  вывод с использованием правила 71 (param)
+
+
+состояние 102
+
+   73 param_declarator: declarator_arg .
+
+    $default  вывод с использованием правила 73 (param_declarator)
+
+
+состояние 103
+
+   72 param_declarator: .  [COMMA, RPAREN]
+   73                 | . declarator_arg
+   74                 | . LPAREN param_declarator RPAREN LPAREN maybe_param_seq RPAREN
+   75                 | . ID LBRACKET array_bound RBRACKET
+   76                 | . STAR param_declarator
+   77                 | . ADDR param_declarator
+   78                 | . call_modifier param_declarator
+   78                 | call_modifier . param_declarator
+   79 declarator_arg: . ID
+   80               | . ID LPAREN maybe_param_seq RPAREN
+   83 call_modifier: . ATTR_CDECL
+   84              | . ATTR_STDCALL
+
+    ID            сдвиг, и переход в состояние 97
+    ATTR_CDECL    сдвиг, и переход в состояние 49
+    ATTR_STDCALL  сдвиг, и переход в состояние 50
+    LPAREN        сдвиг, и переход в состояние 98
+    STAR          сдвиг, и переход в состояние 99
+    ADDR          сдвиг, и переход в состояние 100
+
+    $default  вывод с использованием правила 72 (param_declarator)
+
+    param_declarator  переход в состояние 117
+    declarator_arg    переход в состояние 102
+    call_modifier     переход в состояние 103
+
+
+состояние 104
+
+   80 declarator_arg: ID LPAREN maybe_param_seq RPAREN .
+
+    $default  вывод с использованием правила 80 (declarator_arg)
+
+
+состояние 105
+
+   19 type_ref: . attributed_type
+   20 attributed_type: . internal_type
+   21                | . user_type
+   22                | . declspec attributed_type
+   23 internal_type: . attr
+   24              | . internal_type attr
+   25              | . internal_type declspec
+   26 attr: . T_SIGNED
+   27     | . T_UNSIGNED
+   28     | . T_CHAR
+   29     | . T_INT8
+   30     | . T_WCHAR_T
+   31     | . T_SHORT
+   32     | . T_INT16
+   33     | . T_INT32
+   34     | . T_INT
+   35     | . T_INT64
+   36     | . T_LONG
+   37     | . T_LONGLONG
+   38     | . T_DOUBLE
+   39     | . T_FLOAT
+   40     | . T_VOID
+   41 user_type: . ID
+   42          | . struct_type
+   43          | . user_type declspec
+   44 struct_type: . struct ID
+   45            | . struct struct_tag LCURL var_decl_seq RCURL
+   46 declspec: . ATTR_DECLSPEC LPAREN ID RPAREN
+   47         | . ATTR_DECLSPEC LPAREN ID LPAREN NUM RPAREN RPAREN
+   48 struct: . T_STRUCT
+   49       | . T_UNION
+   70 param_seq: param_seq COMMA . param
+   71 param: . type_ref param_declarator
+
+    ID             сдвиг, и переход в состояние 1
+    T_STRUCT       сдвиг, и переход в состояние 3
+    T_UNION        сдвиг, и переход в состояние 4
+    ATTR_DECLSPEC  сдвиг, и переход в состояние 5
+    T_UNSIGNED     сдвиг, и переход в состояние 7
+    T_SIGNED       сдвиг, и переход в состояние 8
+    T_INT8         сдвиг, и переход в состояние 9
+    T_INT16        сдвиг, и переход в состояние 10
+    T_INT32        сдвиг, и переход в состояние 11
+    T_INT64        сдвиг, и переход в состояние 12
+    T_DOUBLE       сдвиг, и переход в состояние 13
+    T_FLOAT        сдвиг, и переход в состояние 14
+    T_CHAR         сдвиг, и переход в состояние 15
+    T_WCHAR_T      сдвиг, и переход в состояние 16
+    T_INT          сдвиг, и переход в состояние 17
+    T_LONG         сдвиг, и переход в состояние 18
+    T_LONGLONG     сдвиг, и переход в состояние 19
+    T_SHORT        сдвиг, и переход в состояние 20
+    T_VOID         сдвиг, и переход в состояние 21
+
+    type_ref         переход в состояние 86
+    attributed_type  переход в состояние 34
+    internal_type    переход в состояние 35
+    attr             переход в состояние 36
+    user_type        переход в состояние 37
+    struct_type      переход в состояние 38
+    declspec         переход в состояние 39
+    struct           переход в состояние 40
+    param            переход в состояние 118
+
+
+состояние 106
+
+   63 declarator: ID LBRACKET array_bound RBRACKET .
+
+    $default  вывод с использованием правила 63 (declarator)
+
+
+состояние 107
+
+   19 type_ref: . attributed_type
+   20 attributed_type: . internal_type
+   21                | . user_type
+   22                | . declspec attributed_type
+   23 internal_type: . attr
+   24              | . internal_type attr
+   25              | . internal_type declspec
+   26 attr: . T_SIGNED
+   27     | . T_UNSIGNED
+   28     | . T_CHAR
+   29     | . T_INT8
+   30     | . T_WCHAR_T
+   31     | . T_SHORT
+   32     | . T_INT16
+   33     | . T_INT32
+   34     | . T_INT
+   35     | . T_INT64
+   36     | . T_LONG
+   37     | . T_LONGLONG
+   38     | . T_DOUBLE
+   39     | . T_FLOAT
+   40     | . T_VOID
+   41 user_type: . ID
+   42          | . struct_type
+   43          | . user_type declspec
+   44 struct_type: . struct ID
+   45            | . struct struct_tag LCURL var_decl_seq RCURL
+   46 declspec: . ATTR_DECLSPEC LPAREN ID RPAREN
+   47         | . ATTR_DECLSPEC LPAREN ID LPAREN NUM RPAREN RPAREN
+   48 struct: . T_STRUCT
+   49       | . T_UNION
+   62 declarator: LPAREN declarator RPAREN LPAREN . maybe_param_seq RPAREN
+   67 maybe_param_seq: .  [RPAREN]
+   68                | . param_seq
+   69 param_seq: . param
+   70          | . param_seq COMMA param
+   71 param: . type_ref param_declarator
+
+    ID             сдвиг, и переход в состояние 1
+    T_STRUCT       сдвиг, и переход в состояние 3
+    T_UNION        сдвиг, и переход в состояние 4
+    ATTR_DECLSPEC  сдвиг, и переход в состояние 5
+    T_UNSIGNED     сдвиг, и переход в состояние 7
+    T_SIGNED       сдвиг, и переход в состояние 8
+    T_INT8         сдвиг, и переход в состояние 9
+    T_INT16        сдвиг, и переход в состояние 10
+    T_INT32        сдвиг, и переход в состояние 11
+    T_INT64        сдвиг, и переход в состояние 12
+    T_DOUBLE       сдвиг, и переход в состояние 13
+    T_FLOAT        сдвиг, и переход в состояние 14
+    T_CHAR         сдвиг, и переход в состояние 15
+    T_WCHAR_T      сдвиг, и переход в состояние 16
+    T_INT          сдвиг, и переход в состояние 17
+    T_LONG         сдвиг, и переход в состояние 18
+    T_LONGLONG     сдвиг, и переход в состояние 19
+    T_SHORT        сдвиг, и переход в состояние 20
+    T_VOID         сдвиг, и переход в состояние 21
+
+    $default  вывод с использованием правила 67 (maybe_param_seq)
+
+    type_ref         переход в состояние 86
+    attributed_type  переход в состояние 34
+    internal_type    переход в состояние 35
+    attr             переход в состояние 36
+    user_type        переход в состояние 37
+    struct_type      переход в состояние 38
+    declspec         переход в состояние 39
+    struct           переход в состояние 40
+    maybe_param_seq  переход в состояние 119
+    param_seq        переход в состояние 88
+    param            переход в состояние 89
+
+
+состояние 108
+
+   45 struct_type: struct struct_tag LCURL var_decl_seq RCURL .
+
+    $default  вывод с использованием правила 45 (struct_type)
+
+
+состояние 109
+
+   56 var_decl: type_ref . declarator_seq
+   59 declarator_seq: . declarator
+   60               | . declarator_seq COMMA declarator
+   61 declarator: . declarator_arg
+   62           | . LPAREN declarator RPAREN LPAREN maybe_param_seq RPAREN
+   63           | . ID LBRACKET array_bound RBRACKET
+   64           | . STAR declarator
+   65           | . ADDR declarator
+   66           | . call_modifier declarator
+   79 declarator_arg: . ID
+   80               | . ID LPAREN maybe_param_seq RPAREN
+   83 call_modifier: . ATTR_CDECL
+   84              | . ATTR_STDCALL
+
+    ID            сдвиг, и переход в состояние 48
+    ATTR_CDECL    сдвиг, и переход в состояние 49
+    ATTR_STDCALL  сдвиг, и переход в состояние 50
+    LPAREN        сдвиг, и переход в состояние 51
+    STAR          сдвиг, и переход в состояние 52
+    ADDR          сдвиг, и переход в состояние 53
+
+    declarator_seq  переход в состояние 120
+    declarator      переход в состояние 56
+    declarator_arg  переход в состояние 57
+    call_modifier   переход в состояние 58
+
+
+состояние 110
+
+   55 var_decl_seq: var_decl_seq var_decl . SEMICOLON
+
+    SEMICOLON  сдвиг, и переход в состояние 121
+
+
+состояние 111
+
+   47 declspec: ATTR_DECLSPEC LPAREN ID LPAREN NUM RPAREN . RPAREN
+
+    RPAREN  сдвиг, и переход в состояние 122
+
+
+состояние 112
+
+   15 pragma_pack: T_PRAGMA_PACK LPAREN ID COMMA NUM RPAREN .
+
+    $default  вывод с использованием правила 15 (pragma_pack)
+
+
+состояние 113
+
+   75 param_declarator: ID LBRACKET . array_bound RBRACKET
+   81 array_bound: .  [RBRACKET]
+   82            | . NUM
+
+    NUM  сдвиг, и переход в состояние 90
+
+    $default  вывод с использованием правила 81 (array_bound)
+
+    array_bound  переход в состояние 123
+
+
+состояние 114
+
+   74 param_declarator: LPAREN param_declarator . RPAREN LPAREN maybe_param_seq RPAREN
+
+    RPAREN  сдвиг, и переход в состояние 124
+
+
+состояние 115
+
+   76 param_declarator: STAR param_declarator .
+
+    $default  вывод с использованием правила 76 (param_declarator)
+
+
+состояние 116
+
+   77 param_declarator: ADDR param_declarator .
+
+    $default  вывод с использованием правила 77 (param_declarator)
+
+
+состояние 117
+
+   78 param_declarator: call_modifier param_declarator .
+
+    $default  вывод с использованием правила 78 (param_declarator)
+
+
+состояние 118
+
+   70 param_seq: param_seq COMMA param .
+
+    $default  вывод с использованием правила 70 (param_seq)
+
+
+состояние 119
+
+   62 declarator: LPAREN declarator RPAREN LPAREN maybe_param_seq . RPAREN
+
+    RPAREN  сдвиг, и переход в состояние 125
+
+
+состояние 120
+
+   56 var_decl: type_ref declarator_seq .  [SEMICOLON]
+   60 declarator_seq: declarator_seq . COMMA declarator
+
+    COMMA  сдвиг, и переход в состояние 77
+
+    $default  вывод с использованием правила 56 (var_decl)
+
+
+состояние 121
+
+   55 var_decl_seq: var_decl_seq var_decl SEMICOLON .
+
+    $default  вывод с использованием правила 55 (var_decl_seq)
+
+
+состояние 122
+
+   47 declspec: ATTR_DECLSPEC LPAREN ID LPAREN NUM RPAREN RPAREN .
+
+    $default  вывод с использованием правила 47 (declspec)
+
+
+состояние 123
+
+   75 param_declarator: ID LBRACKET array_bound . RBRACKET
+
+    RBRACKET  сдвиг, и переход в состояние 126
+
+
+состояние 124
+
+   74 param_declarator: LPAREN param_declarator RPAREN . LPAREN maybe_param_seq RPAREN
+
+    LPAREN  сдвиг, и переход в состояние 127
+
+
+состояние 125
+
+   62 declarator: LPAREN declarator RPAREN LPAREN maybe_param_seq RPAREN .
+
+    $default  вывод с использованием правила 62 (declarator)
+
+
+состояние 126
+
+   75 param_declarator: ID LBRACKET array_bound RBRACKET .
+
+    $default  вывод с использованием правила 75 (param_declarator)
+
+
+состояние 127
+
+   19 type_ref: . attributed_type
+   20 attributed_type: . internal_type
+   21                | . user_type
+   22                | . declspec attributed_type
+   23 internal_type: . attr
+   24              | . internal_type attr
+   25              | . internal_type declspec
+   26 attr: . T_SIGNED
+   27     | . T_UNSIGNED
+   28     | . T_CHAR
+   29     | . T_INT8
+   30     | . T_WCHAR_T
+   31     | . T_SHORT
+   32     | . T_INT16
+   33     | . T_INT32
+   34     | . T_INT
+   35     | . T_INT64
+   36     | . T_LONG
+   37     | . T_LONGLONG
+   38     | . T_DOUBLE
+   39     | . T_FLOAT
+   40     | . T_VOID
+   41 user_type: . ID
+   42          | . struct_type
+   43          | . user_type declspec
+   44 struct_type: . struct ID
+   45            | . struct struct_tag LCURL var_decl_seq RCURL
+   46 declspec: . ATTR_DECLSPEC LPAREN ID RPAREN
+   47         | . ATTR_DECLSPEC LPAREN ID LPAREN NUM RPAREN RPAREN
+   48 struct: . T_STRUCT
+   49       | . T_UNION
+   67 maybe_param_seq: .  [RPAREN]
+   68                | . param_seq
+   69 param_seq: . param
+   70          | . param_seq COMMA param
+   71 param: . type_ref param_declarator
+   74 param_declarator: LPAREN param_declarator RPAREN LPAREN . maybe_param_seq RPAREN
+
+    ID             сдвиг, и переход в состояние 1
+    T_STRUCT       сдвиг, и переход в состояние 3
+    T_UNION        сдвиг, и переход в состояние 4
+    ATTR_DECLSPEC  сдвиг, и переход в состояние 5
+    T_UNSIGNED     сдвиг, и переход в состояние 7
+    T_SIGNED       сдвиг, и переход в состояние 8
+    T_INT8         сдвиг, и переход в состояние 9
+    T_INT16        сдвиг, и переход в состояние 10
+    T_INT32        сдвиг, и переход в состояние 11
+    T_INT64        сдвиг, и переход в состояние 12
+    T_DOUBLE       сдвиг, и переход в состояние 13
+    T_FLOAT        сдвиг, и переход в состояние 14
+    T_CHAR         сдвиг, и переход в состояние 15
+    T_WCHAR_T      сдвиг, и переход в состояние 16
+    T_INT          сдвиг, и переход в состояние 17
+    T_LONG         сдвиг, и переход в состояние 18
+    T_LONGLONG     сдвиг, и переход в состояние 19
+    T_SHORT        сдвиг, и переход в состояние 20
+    T_VOID         сдвиг, и переход в состояние 21
+
+    $default  вывод с использованием правила 67 (maybe_param_seq)
+
+    type_ref         переход в состояние 86
+    attributed_type  переход в состояние 34
+    internal_type    переход в состояние 35
+    attr             переход в состояние 36
+    user_type        переход в состояние 37
+    struct_type      переход в состояние 38
+    declspec         переход в состояние 39
+    struct           переход в состояние 40
+    maybe_param_seq  переход в состояние 128
+    param_seq        переход в состояние 88
+    param            переход в состояние 89
+
+
+состояние 128
+
+   74 param_declarator: LPAREN param_declarator RPAREN LPAREN maybe_param_seq . RPAREN
+
+    RPAREN  сдвиг, и переход в состояние 129
+
+
+состояние 129
+
+   74 param_declarator: LPAREN param_declarator RPAREN LPAREN maybe_param_seq RPAREN .
+
+    $default  вывод с использованием правила 74 (param_declarator)

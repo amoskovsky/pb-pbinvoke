@@ -1,0 +1,22 @@
+<h1>Handling TCHAR and TSTR. Unicode/ANSI function name suffixes</h1>
+<p>When at least one of parameter types or return type of a declared DLL function is based on TCHAR type, 
+then PBInvoke automatically appends a suffix "A" or "W" to the function's name  and treats TCHAR as char or wchar_t
+ depending on PowerBuilder version.
+<p>In Unicode versions (PB10 and above), the "W" suffix is appended and TCHAR=wchar_t, 
+<p>In ANSI version (PB9 and below) , the "A" suffix is appended and TCHAR=char.
+
+<p>If the function with the suffix does not exist in the DLL, then PBInvoke tries to find the function without the prefix.
+
+<p>Example:
+<pb>
+lnv_CreateDirectory = lnv_kernel32.of_declare_method(&
+   "BOOL CreateDirectory(LPCTSTR lpPathName, LPSECURITY_ATTRIBUTES lpSecurityAttributes);")
+// The exact meaning of the declaration above depends on PB version:
+// in PB9:  BOOL CreateDirectoryA(const char *lpPathName, LPSECURITY_ATTRIBUTES lpSecurityAttributes)
+// in PB10: BOOL CreateDirectoryW(const wchar_t *lpPathName, LPSECURITY_ATTRIBUTES lpSecurityAttributes)
+</pb>
+
+<h3>See also</h3>
+<li> <a href="handling-strings.html">Handling strings (char*, wchar_t*)</a>
+<li> <a href="winapi.html">WinAPI constants and types</a>
+<li> <a href="working-with-callbacks.html">Working with callbacks</a>

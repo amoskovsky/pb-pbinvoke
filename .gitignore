@@ -1,0 +1,12 @@
+.svn
+*.log
+*.aps
+*.obj
+*.user
+*.suo
+*.ncb
+*.opt
+*.plg
+Release
+Debug
+ReleaseDemo

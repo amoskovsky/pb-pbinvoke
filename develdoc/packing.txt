@@ -1,0 +1,118 @@
+1. http://blogs.msdn.com/oldnewthing/archive/2007/12/27/6873648.aspx
+
+2. Выравнивание структуры равно максимальному выравниванию из всех членов структуры.
+Пример.
+struct S {
+	char a;  // alignof(char) == 1
+	int b;   // alignof(int)  == 4
+};
+alignof(S) == max(alignof(char), alignof(int)) == 4
+Т.е. начало структуры будет выровнено на 4 байтовую границу.
+Для этого конец структуры будет дополнен заполняющими байтами:
+struct S {
+	int a;
+	char b;
+	byte padding[3];
+}
+sizeof(S) == 8
+
+
+3. #pragma pack(n) для структуры означает что даже если выравнивание структуры 
+больше n, то все равно будет использовано n.
+Если же выравнивание структуры меньше n, то будет использовано меньшее значение.
+
+Пример 1 (выравнивание > n).
+#pragma pack(2)
+struct S {
+	char a;
+	int b;
+};
+
+alignof(S) == 2
+т.е:
+struct S {
+	char a;
+	byte padding[1];
+	int b;
+}
+
+sizeof(S) == 6
+
+Пример 2 (выравнивание < n).
+#pragma pack(2)
+struct S {
+	char a;
+	char b;
+};
+
+alignof(S) == 1
+т.е:
+struct S {
+	char a;
+	char b;
+}
+sizeof(S) == 2
+
+4. __declspec(align(n)) задает явно выравнивание декларации. 
+Переопределяет alignof по умолчанию для типа данных.
+Декларация дополняется байтами до размера кратного n.
+
+
+5. Если в промежутке добавленном для выравнивания предыдущего члена структуры можно разместить 
+следующие члены структуры с соблюдением их выравнивания то они помещаются туда, а не увеличивают размер структуры.
+
+
+6. Алгоритм размещения членов структуры с учетом __declspec(align(n)) и #pragma pack(n)
+
+Обозначения:
+pack - значение n из #pragma pack(n)
+explicit_struct_align - значение n из  struct __declspec(align(n)) S {...} - явное выравнивание структуры
+explicit_member_align - значение n из  struct S { __declspec(align(n))  type field; ..} - явное выравнивание поля структуры
+type_align - выравнивание по умолчанию для типа данных.
+offset - текущее смещение после размещения очередного поля
+type_size - размер значения типа данных поля
+member_offset - смещение поля структуры
+struct_size - размер структуры с учетом всех выравниваний
+struct_align - результирующее выравнивание структуры
+
+begin
+	// calc struct align
+ 	if is_arg_storage then
+ 		pack = 4;
+	if explicit_struct_align is not null then 
+		if pack < explicit_struct_align then
+			pack = explicit_struct_align;
+		struct_align = explicit_struct_align;
+	else
+		struct_align = 1;
+	end if
+	foreach member
+		member_align = NULL;
+		if is_arg_storage then
+			member_align = 4;
+		if explicit_member_align is not null then 
+			if member_align is null and then
+				member_align = explicit_member_align;
+   		if pack < explicit_member_align then
+   			pack = explicit_member_align;
+   	end if
+		if member_align is null then 
+			member_align = type_align;
+		end if
+		if struct_align < member_align then 
+			struct_align = member_align;
+	next
+	if struct_align > pack then 
+		struct_align = pack;
+
+	// calc offsets
+	offset = 0;
+	foreach member
+	   offset = member_align * (int)((offset + member_align - 1) / member_align);
+	   member_offset = offset;
+	   offset += type_size;
+	next
+	struct_size = struct_align * (int)((offset + struct_align - 1) / struct_align);
+end;
+
+

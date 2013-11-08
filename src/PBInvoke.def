@@ -1,0 +1,86 @@
+LIBRARY  
+EXPORTS
+
+	
+	;at_getMetaData
+	
+	bt_allocateBuffer
+	bt_create
+	bt_getArrayData
+	bt_getData
+	bt_getInt64
+	bt_getItemIndex
+	bt_getPBTypeClass
+	bt_getPtr
+	bt_getSizeOf
+	bt_isCompatible
+	bt_isSame
+	bt_setData
+	bt_setArrayData
+	bt_setInt64
+	;bt_setPointerToArrayData
+	bt_setPtr
+	bt_setZeroData
+	
+	cb_create
+	cb_destroy
+	cb_getAddr
+	cb_setHookFilter
+
+	core_check
+	core_compile
+	core_getPack
+	core_popPack
+	core_pushPack
+	core_setAppHandle
+	core_setCallbackMessageId
+	core_setCallbackMessageHandler
+	core_setDefCallingConvention
+	core_setKey
+	core_setPack
+	
+	ctx_clear
+	ctx_create
+	ctx_destroy
+
+	er_getLastException
+
+	g_isPBUnicode
+	g_getCoreInstance
+
+	lib_create
+	lib_createMethodInstance
+	lib_destroy
+ 
+	me_create
+	me_destroy
+	me_getContextData
+	me_invoke
+	
+	mi_destroy
+	mi_getMethodAddr
+	mi_getMethodType
+	 
+	mt_getMethodTypeData1
+	mt_getMethodTypeData2
+	
+	pt_getMetaData
+	
+	;rt_getMetaData
+
+	s_destroy
+	s_get
+	s_size
+	
+	str_create
+	str_getContextData
+	str_getTypeData1
+	str_getTypeData2
+	
+	tf_createMethodType
+
+	debug
+	
+	
+	
+	 

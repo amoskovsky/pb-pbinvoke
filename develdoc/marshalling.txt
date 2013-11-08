@@ -1,0 +1,36 @@
+—оответствие типов данных C/C++ и PowerBuilder.
+
+”словные обозначени€:
+ Charset  - в зависимости от версии PB может потребоватьс€ преобразование ANSI <-> Unicode
+ Raw      - данные копируютс€ без преобразовани€
+ AutoAW   - в зависимости от версии PB к имени ф-и, в которой любой из аргументов имеет этот тип,
+            прибавл€етс€ суффикс A (ANSI, PB5-9) или W (Unicode, PB10+).
+
+
+—троковые типы.
+char							  char                   (Charset)
+wchar_t                   char                   (Charset) 
+tchar_t                   char                   (Raw, AutoAW)
+char *                    string                 (Charset)
+wchar_t *                 string                 (Charset)
+tchar_t *                 string                 (Raw, AutoAW)
+
+????
+byte_t                    int                    (Raw)  
+std::string               string                 (Charset)
+std::wstring              string                 (Charset)
+std::tstring              string                 (Raw, AutoAW)
+std::vector<byte_t>       blob                   (Raw)
+
+ѕростые (числовые и булевые) типы.
+[unsigned] short          [unsigned] int         (Raw)
+[unsigned] int            [unsigned] long        (Raw)
+bool                      boolean                (Raw)
+
+”казатели на ф-и.
+... (CALLBACK *)(...)     наследник n_pi_callback
+
+”казатели на простые типы (все кроме строковых и ф-й).
+тип *                     ref тип                (Raw)
+
+

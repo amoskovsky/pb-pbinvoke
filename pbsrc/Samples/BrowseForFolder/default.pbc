@@ -1,0 +1,26 @@
+Version = 1
+PbVersion = 9
+SrcDir =
+
+App = 
+Libs = (
+browseforfolder_demo.pbl,,1
+browseforfolder.pbl,,1
+pbinvoke.pbl,,1
+)
+Exe = Debug\aaaaa.exe  # Executable file name
+ExePbr =   
+ExeIcon = 
+MachineCode = 0  # 0 - P-CODE, 1 - DLL    
+#Use new visual style controls (XP)
+xpstyle = 0 #  0 - old / 1 - new
+
+ProductName = 
+CompanyName = 
+Description = 
+Copyright = 
+ProductVersion = 
+ProductVersionNum = 
+FileVersion = 
+FileVersionNum = 
+ 

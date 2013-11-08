@@ -1,0 +1,86 @@
+<html>
+<head>
+	<title>PBInvoke library</title>
+   <link rel="stylesheet" href="style.css" type="text/css">
+</head>
+<body>
+<div id="container">
+   	<div id="header">
+     		PBInvoke documentation. Version 1.X. Visit <a href="http://sqlbatch.com/pbinvoke">http://sqlbatch.com/pbinvoke</a> for updates.
+   	</div>         
+		<div id="main"><h1>PBInvoke library</h1>
+
+<h2>Summary</h2>
+PBInvoke is a PowerBuilder library for calling external DLL functions with arbitrary 
+parameter and return types - structures, unions, pointers, etc. including 
+function pointers to PowerBuilder methods callable from DLL code as callbacks.
+
+
+<h2>PBInvoke goals</h2>
+<ul>
+
+<li> Allow PowerBuilder developers to work in PowerScript with complex data structures without 
+  writing wrapper DLLs in other languages such as C/C++. 
+
+<li> Make declarations of external functions ANSI/Unicode-independent which avoids migration issues 
+when using the same code across ANSI and Unicode versions of PowerBuilder.
+
+<li> Support any C/C++ data type (except classes). This includes complex nested data types involving 
+structs, unions, pointers, simple types and their combinations.
+
+<li> Support not only STDCALL calling convention, but also CDECL which is default in C/C++ programs.
+
+<li> Allow PB code to be called from external functions as callbacks with full access to passed parameters.
+
+<li> Support wide range of PowerBuilder versions from PB 6 to PB 11.5 and any future version.
+
+</ul>
+
+
+<h2>Why not use native PowerBuilder external functions?</h2>
+
+PowerBuilder support of external functions has the following restrictions
+which make developers write wrapper code in C/C++ and compile it with third party compilers.
+<ul> 
+<li> No support for PowerBuilder callbacks.
+<li> No support for unions and pointers to complex data types in structures.
+<li> External function declarations depend on string encoding expected by functions. 
+Often a charset conversion is required between ANSI PB and Unicode DLL and vice versa.
+PowerScript attrubute ';ansi' is available only in PB10+ and makes the source code incompatible with older PB versions. 
+PBInvoke automatically handles the encoding stuff (including function name suffixes such as A/W in WinAPI).
+
+</ul>
+
+<h2>Why not use PowerBuilder extensions (PBNI)?</h2>
+
+<ul> 
+<li> PBNI is available only as of PB9.
+<li> PBNI requires knowledge of C++.
+<li> PBNI extensions are quite hard to write and debug.
+<li> PBNI requires separate DLLs for ANSI and Unicode versions.
+</ul>
+
+
+
+<h3>See also</h3>
+<li> <a href="quick-start-guide.html">Quick Start Guide</a>
+<li> <a href="calling-dll-functions.html">Calling DLL functions using PBInvoke</a>
+<li> <a href="handling-strings.html">Handling strings (char*, wchar_t*)</a>
+<li> <a href="handling-tchar.html">Handling TCHAR and TSTR. Unicode/ANSI function name suffixes</a>
+<li> <a href="supported-data-types.html">Supported data types</a>
+<li> <a href="winapi.html">WinAPI constants and types</a>
+<li> <a href="working-with-structures.html">Working with C/C++ structures/unions</a>
+<li> <a href="working-with-callbacks.html">Working with callbacks</a>
+<li> <a href="unsupported.html">Unsupported and unimplemented PBInvoke features</a>
+<li> <a href="license.html">PBInvoke library license agreement</a>
+
+
+
+</div>
+   	<div id="footer">
+     		Copyright (C) 2009 <a href="mailto: Anatoly Moskovsky <avm@sqlbatch.com>">Anatoly Moskovsky</a>
+   	</div>         
+</div>
+
+</body>
+</html>

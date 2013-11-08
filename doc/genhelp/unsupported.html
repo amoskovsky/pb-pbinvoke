@@ -1,0 +1,45 @@
+<html>
+<head>
+	<title>Unsupported and unimplemented PBInvoke features</title>
+   <link rel="stylesheet" href="style.css" type="text/css">
+</head>
+<body>
+<div id="container">
+   	<div id="header">
+     		PBInvoke documentation. Version 1.X. Visit <a href="http://sqlbatch.com/pbinvoke">http://sqlbatch.com/pbinvoke</a> for updates.
+   	</div>         
+		<div id="main"><h1>Unsupported and unimplemented PBInvoke features</h1>
+
+
+<h2> Unsupported usage of PBInvoke </h2>
+The following modes may (or may not) work but are not supported officially.
+<li> Using PBInvoke with PowerBuilder 5 (PBInvoke supports only PB 6 and above)
+<li> Machine code targets (DLL builds) 
+<li> Web and .Net targets (WinForm, WebForm, JSP, Web services ...)
+
+<p> Only P-code (PBD) builds are supported.
+
+<h2> Unimplemented features</h2>
+
+The following features will be implemented in one of the future versions of PBInvoke.
+
+<li> .Net interop (calls to external .Net classes, not under .Net targets)
+<li> Java interop (calls to external Java classes)
+<li> Calls via function pointers (now only named DLL functions and PB callbacks can be called)
+<li> Double, float as a return type for callbacks. However pointers to such types are supported as a return type. 
+<li> Any struct of size of more than 4 bytes as a return type for any function. 
+However pointers to such structures are supported as a return type. 
+<li> C++ classes, structures inherited from other structures. 
+
+<h3>See also</h3>
+<li> <a href="supported-data-types.html">Supported data types</a>
+<li> <a href="winapi.html">WinAPI constants and types</a>
+
+</div>
+   	<div id="footer">
+     		Copyright (C) 2009 <a href="mailto: Anatoly Moskovsky <avm@sqlbatch.com>">Anatoly Moskovsky</a>
+   	</div>         
+</div>
+
+</body>
+</html>

@@ -1,0 +1,121 @@
+<html>
+<head>
+	<title>Working with C/C++ structures/unions</title>
+   <link rel="stylesheet" href="style.css" type="text/css">
+</head>
+<body>
+<div id="container">
+   	<div id="header">
+     		PBInvoke documentation. Version 1.X. Visit <a href="http://sqlbatch.com/pbinvoke">http://sqlbatch.com/pbinvoke</a> for updates.
+   	</div>         
+		<div id="main"><h1>Working with C/C++ structures/unions</h1>
+
+<p>PBInvoke supports full access to C++ structs/unions from PowerBuilder.
+
+<p>Because there is no equivalents for unions and field types such 
+as pointers to structures and function pointers in PowerBuilder, 
+PBInvoke have a special object for storing such values: n_pi_value.
+
+<h2>Working with nested structures and unions.</h2>
+<p> Suppose you have the following structure declaration:
+<pre class="pb">n_pi_core lnv_core
+lnv_core.of_declare("struct MYSTR { union { int ival; char* sval;} u; char ch;}")
+</pre>
+This is a structure MYSTR which has a field of type char, 'ch', and a field of type union 'u', 
+which itself has two fields 'ival' and 'sval', which share the same memory.
+
+<p>Some examples of working with the structure:
+<pre class="pb">n_pi_core lnv_core
+n_pi_value lnv_str
+
+<span class="cmt">// Create an instance of the structure in memory</span>
+<span class="cmt">// In C++: MYSTR str;</span>
+lnv_str = lnv_core.of_create_value_of("MYSTR"); 
+
+<span class="cmt">// Fill the structure's memory with zero bytes.</span>
+<span class="cmt">// Note, however, that of_create_value_of() does it anyway.</span>
+<span class="cmt">// C++: memset(&str, sizeof(MYSTR), 0);</span>
+lnv_str.of_set(0)
+
+<span class="cmt">// Assign to sval field of the union</span>
+<span class="cmt">// C++: str.u.sval = "test";</span>
+lnv_str.of_item("u").of_set("sval", "test")
+</pre>
+A few words regarding what does n_pi_value.of_item do.
+When you call of_item("fieldname"), a n_pi_value is returned which is a reference to the field.
+No data is copied. When you modify this reference, the original structure is modified.
+<p> of_item() is used most often for accessing nested structures. 
+If you have a field of a simple type (string, numeric) you use of_get("field")/of_set("field", value) 
+instead of of_item("field").
+<p> Also note, that field name in of_item(), of_get(), of_set() is case sensitive.
+<pre class="pb"><span class="cmt">// Read the value of ival which now holds the pointer to the string "test" because ival and sval share their memory.</span>
+<span class="cmt">// C++: int i = str.u.ival;</span>
+ll_i = lnv_str.of_item("u").of_get("ival")
+
+<span class="cmt">// Assign to ch field of the structure</span>
+<span class="cmt">// C++: str.ch = 'A';</span>
+lnv_str.of_set("ch", "A")
+lnv_str.of_set(2, "A") <span class="cmt">// Fields can also be accessed by a 1-based index in order of their declarations.</span>
+
+<span class="cmt">// Pass the structure as a parameter to a function:</span>
+<span class="cmt">// C++: void fn1(MYSTR s) { }  </span>
+<span class="cmt">//      fn1(str) </span>
+n_pi_method lnv_fn1
+lnv_fn1 = lnv_somedll.of_declare_method("void fn1(MYSTR s)")
+lnv_fn1.of_invoke(lnv_str) <span class="cmt">// lnv_str's value is copied.</span>
+
+<span class="cmt">// Pass the structure as a pointer parameter to a function:</span>
+<span class="cmt">// C++: void fn2(MYSTR *s) { s->u.sval = "fn2"; };  </span>
+<span class="cmt">//      fn2(&str) </span>
+lnv_fn2 = lnv_somedll.of_declare_method("void fn2(MYSTR *s)")
+lnv_fn2.of_invoke(lnv_str) <span class="cmt">// implicitly gets the address of the structure</span>
+<span class="cmt">//or</span>
+lnv_fn2.of_invoke(lnv_str.of_get_addr()) <span class="cmt">// which is the same, but explicit.</span>
+
+<span class="cmt">// If the structure is modified in fn2 we'll see those changes</span>
+String ls_mod
+ls_mod = lnv_str.of_item("u").of_get("sval") <span class="cmt">// returns "fn2"</span>
+
+</pre>
+
+<h2>Working with pointers to structures as fields.</h2>
+Pointers to a type require dereferencing in order to allow access to the value they point to.
+
+<pre class="pb">lnv_core.of_declare("struct N { int a;}")  <span class="cmt">// declare a struct</span>
+lnv_core.of_declare("struct S { N* n;}")   <span class="cmt">// declare a struct with nested pointer to a struct</span>
+<span class="cmt">// create an instance</span>
+<span class="cmt">// C++: S str;</span>
+lnv_str = lnv_core.of_create_value_of("S")
+
+<span class="cmt">// init the pointer n with the address of an instance of N</span>
+<span class="cmt">// C++: s.n = new N();</span>
+lnv_str.of_set("n", lnv_core.of_create_value_of("N"))
+
+<span class="cmt">// access the nested field, a</span>
+<span class="cmt">// C++:  str.n->a = 123;</span>
+lnv_str.of_item("n").of_deref().of_set("a", 123)
+
+<span class="cmt">// get the nested structure as separate reference</span>
+<span class="cmt">// C++: N &n = *str.n;</span>
+lnv_n = lnv_str.of_item("n").of_deref() <span class="cmt">// note this is just a reference, not a copy.</span>
+
+<span class="cmt">//Now lnv_n.of_get("a") is the same as lnv_str.of_item("n").of_deref().of_get("a")</span>
+</pre>
+
+<h3>See also</h3>
+<li> <a href="handling-strings.html">Handling strings (char*, wchar_t*)</a>
+<li> <a href="handling-tchar.html">Handling TCHAR and TSTR. Unicode/ANSI function name suffixes</a>
+<li> <a href="working-with-callbacks.html">Working with callbacks</a>
+
+
+
+
+
+</div>
+   	<div id="footer">
+     		Copyright (C) 2009 <a href="mailto: Anatoly Moskovsky <avm@sqlbatch.com>">Anatoly Moskovsky</a>
+   	</div>         
+</div>
+
+</body>
+</html>

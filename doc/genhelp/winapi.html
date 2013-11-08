@@ -1,0 +1,51 @@
+<html>
+<head>
+	<title>WinAPI constants and types</title>
+   <link rel="stylesheet" href="style.css" type="text/css">
+</head>
+<body>
+<div id="container">
+   	<div id="header">
+     		PBInvoke documentation. Version 1.X. Visit <a href="http://sqlbatch.com/pbinvoke">http://sqlbatch.com/pbinvoke</a> for updates.
+   	</div>         
+		<div id="main"><h1>WinAPI constants and types</h1>
+
+<p>WinAPI is most widely used as external functions in PowerBuilder.
+
+<h2>WinAPI constants</h2>
+<p>PBInvoke provides an object with many WinAPI constants, n_pi_winapi.
+The constants can be used without instantiation of the object via syntax:
+<pre class="pb">n_pi_winapi.<i>CONSTANT_NAME</i>
+</pre>
+
+<p>Example:
+<pre class="pb">lnv_SendMessage.of_invoke(Handle(w_win), n_pi_winapi.WM_KEYDOWN, 9 <span class="cmt">/*Tab*/</span>, 0)
+</pre>
+
+
+<h2>WinAPI types</h2>
+
+PBInvoke has built-in support for the following WinAPI types:
+<blockquote>
+TCHAR, TSTR, LPTSTR, LPCTSTR, WCHAR, WSTR, LPWSTR, LPCWSTR, CHAR, STR, LPSTR, LPCSTR, BYTE,BOOL, HWND, HINSTANCE, 
+LPBOOL, INT, UINT, UINT_PTR, DWORD, LPDWORD, HANDLE, LRESULT, LONG, ULONG, WPARAM, LPARAM, HMODULE, HHOOK,
+WORD, LPWORD, SHORT, USHORT, VOID, PVOID, LPVOID, LPCVOID, FLOAT, LPSECURITY_ATTRIBUTES
+</blockquote>
+
+<h3>See also</h3>
+<li> <a href="calling-dll-functions.html">Calling DLL functions using PBInvoke</a>
+<li> <a href="handling-tchar.html">Handling TCHAR and TSTR. Unicode/ANSI function name suffixes</a>
+<li> <a href="supported-data-types.html">Supported data types</a>
+<li> <a href="working-with-callbacks.html">Working with callbacks</a>
+
+
+
+
+</div>
+   	<div id="footer">
+     		Copyright (C) 2009 <a href="mailto: Anatoly Moskovsky <avm@sqlbatch.com>">Anatoly Moskovsky</a>
+   	</div>         
+</div>
+
+</body>
+</html>

@@ -1,0 +1,105 @@
+<h1>Working with C/C++ structures/unions</h1>
+
+<p>PBInvoke supports full access to C++ structs/unions from PowerBuilder.
+
+<p>Because there is no equivalents for unions and field types such 
+as pointers to structures and function pointers in PowerBuilder, 
+PBInvoke have a special object for storing such values: n_pi_value.
+
+<h2>Working with nested structures and unions.</h2>
+<p> Suppose you have the following structure declaration:
+<pb>n_pi_core lnv_core
+lnv_core.of_declare("struct MYSTR { union { int ival; char* sval;} u; char ch;}")
+</pb>
+This is a structure MYSTR which has a field of type char, 'ch', and a field of type union 'u', 
+which itself has two fields 'ival' and 'sval', which share the same memory.
+
+<p>Some examples of working with the structure:
+<pb>n_pi_core lnv_core
+n_pi_value lnv_str
+
+// Create an instance of the structure in memory
+// In C++: MYSTR str;
+lnv_str = lnv_core.of_create_value_of("MYSTR"); 
+
+// Fill the structure's memory with zero bytes.
+// Note, however, that of_create_value_of() does it anyway.
+// C++: memset(&str, sizeof(MYSTR), 0);
+lnv_str.of_set(0)
+
+// Assign to sval field of the union
+// C++: str.u.sval = "test";
+lnv_str.of_item("u").of_set("sval", "test")
+</pb>
+A few words regarding what does n_pi_value.of_item do.
+When you call of_item("fieldname"), a n_pi_value is returned which is a reference to the field.
+No data is copied. When you modify this reference, the original structure is modified.
+<p> of_item() is used most often for accessing nested structures. 
+If you have a field of a simple type (string, numeric) you use of_get("field")/of_set("field", value) 
+instead of of_item("field").
+<p> Also note, that field name in of_item(), of_get(), of_set() is case sensitive.
+<pb> 
+// Read the value of ival which now holds the pointer to the string "test" because ival and sval share their memory.
+// C++: int i = str.u.ival;
+ll_i = lnv_str.of_item("u").of_get("ival")
+
+// Assign to ch field of the structure
+// C++: str.ch = 'A';
+lnv_str.of_set("ch", "A")
+lnv_str.of_set(2, "A") // Fields can also be accessed by a 1-based index in order of their declarations.
+
+// Pass the structure as a parameter to a function:
+// C++: void fn1(MYSTR s) { }  
+//      fn1(str) 
+n_pi_method lnv_fn1
+lnv_fn1 = lnv_somedll.of_declare_method("void fn1(MYSTR s)")
+lnv_fn1.of_invoke(lnv_str) // lnv_str's value is copied.
+
+// Pass the structure as a pointer parameter to a function:
+// C++: void fn2(MYSTR *s) { s->u.sval = "fn2"; };  
+//      fn2(&str) 
+lnv_fn2 = lnv_somedll.of_declare_method("void fn2(MYSTR *s)")
+lnv_fn2.of_invoke(lnv_str) // implicitly gets the address of the structure
+//or
+lnv_fn2.of_invoke(lnv_str.of_get_addr()) // which is the same, but explicit.
+
+// If the structure is modified in fn2 we'll see those changes
+String ls_mod
+ls_mod = lnv_str.of_item("u").of_get("sval") // returns "fn2"
+
+</pb>
+
+<h2>Working with pointers to structures as fields.</h2>
+Pointers to a type require dereferencing in order to allow access to the value they point to.
+
+<pb>
+lnv_core.of_declare("struct N { int a;}")  // declare a struct
+lnv_core.of_declare("struct S { N* n;}")   // declare a struct with nested pointer to a struct
+// create an instance
+// C++: S str;
+lnv_str = lnv_core.of_create_value_of("S")
+
+// init the pointer n with the address of an instance of N
+// C++: s.n = new N();
+lnv_str.of_set("n", lnv_core.of_create_value_of("N"))
+
+// access the nested field, a
+// C++:  str.n->a = 123;
+lnv_str.of_item("n").of_deref().of_set("a", 123)
+
+// get the nested structure as separate reference
+// C++: N &n = *str.n;
+lnv_n = lnv_str.of_item("n").of_deref() // note this is just a reference, not a copy.
+
+//Now lnv_n.of_get("a") is the same as lnv_str.of_item("n").of_deref().of_get("a")
+</pb>
+
+<h3>See also</h3>
+<li> <a href="handling-strings.html">Handling strings (char*, wchar_t*)</a>
+<li> <a href="handling-tchar.html">Handling TCHAR and TSTR. Unicode/ANSI function name suffixes</a>
+<li> <a href="working-with-callbacks.html">Working with callbacks</a>
+
+
+
+
+

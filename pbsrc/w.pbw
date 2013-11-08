@@ -1,0 +1,12 @@
+Save Format v3.0(19990112)
+@begin Unchecked
+@end;
+@begin Targets
+ 0 "tester.pbt";
+ 1 "Samples\\SetWindowHook\\setwindowshookdemo.pbt";
+ 2 "Samples\\BrowseForFolder\\browseforfolder.pbt";
+ 3 "pbinvoke\\build_pbinvoke.pbt";
+ 4 "Samples\\enumwindows\\enumwindows.pbt";
+@end;
+DefaultTarget "tester.pbt";
+DefaultRemoteTarget "tester.pbt";

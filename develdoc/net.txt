@@ -1,0 +1,7 @@
+1. http://habrahabr.ru/blogs/net/58031/  Net -> C++
+   http://habrahabr.ru/blogs/net/58240/  COM -> Net 
+   http://blog.undsoft.com/programming/export-managed-to-unmanaged/  C++ -> Net
+   http://www.csharphelp.com/archives3/archive500.html
+   http://habrahabr.ru/blogs/programming/47732/   C++/CLI    хорошая мини-справка по C++ <-> .Net
+
+2. http://stackoverflow.com/questions/106033/how-do-i-call-a-net-assembly-from-c-c

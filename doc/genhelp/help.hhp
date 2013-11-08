@@ -1,0 +1,28 @@
+[OPTIONS]
+Compatibility=1.1 or later
+Compiled file=..\pbinvoke_en.chm
+Contents file=help.hhc
+Default topic=index.html
+Display compile progress=No
+Full-text search=Yes
+Index file=help.hhk
+Language=0x409 English (United States)
+Title=PBInvoke Documentation
+
+
+[FILES]
+calling-dll-functions.html
+handling-strings.html
+handling-tchar.html
+index.html
+license.html
+quick-start-guide.html
+style.css
+supported-data-types.html
+unsupported.html
+winapi.html
+working-with-callbacks.html
+working-with-structures.html
+
+[INFOTYPES]
+

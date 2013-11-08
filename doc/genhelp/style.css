@@ -1,0 +1,250 @@
+body {
+	font-family: arial, sans-serif;
+}
+
+h1, h2, h3 {
+	font-family: tahoma;
+}
+
+h1 {
+}
+h1, h1 a {
+	background-color1: #9ebad2;
+	border1: dotted 1px #6e8aa2;
+	color: #5e7a92;  
+}
+
+h2 {
+	border1: 1px solid #6e8aa2;
+	background-color1: #9ebad2;
+	color: #3e5a72;  
+	padding-top: 4px;
+	padding-bottom: 4px;
+	margin-bottom: 2px;
+	border-bottom: 2px solid ;
+	padding-left: 0;
+}
+
+h3 {
+	margin: 1em 0 3px 0;
+	padding-left: 0;
+	color: #3e5a72;  
+}
+
+#container {
+	padding: 0;
+	margin: 1% auto 0 auto;
+	position: relative;
+}
+#main {
+	margin-left: 0;
+}
+
+#footer, #header {
+	border-top: 2px solid #3e5a72;
+	border-bottom: 2px solid #3e5a72;
+	margin-top: 1%;
+   position: relative;
+	clear: both;
+   font-size: 70%;
+}
+
+#copyright {
+	display: inline;
+	padding-left: 2%;
+	padding-rgiht: 2%;
+}
+#report {
+	display: inline;
+	padding-left: 2%;
+	padding-rgiht: 2%;
+}
+
+hr {
+}
+
+                	
+table {
+	border: 1px solid #808080;
+	border-collapse: collapse;
+	margin: 0;
+}
+td, th {
+	border: 1px solid #8080a0;
+	margin: 0;
+	padding: 2px;
+}
+th {
+	background-color: #eeeeff;
+	color: #3e5a72;  
+}
+
+
+
+div.section {
+	border: 1px dotted #EEEEEE;
+	padding: 1em;
+	background-color1: #fffff7;
+
+}
+.section p {
+}
+
+#main p {
+}
+
+td.product {
+	text-align: left;
+}
+td.price {
+	text-align: center;
+}
+td.order {
+	text-align: center;
+}
+
+a img {
+	border: none;
+}
+
+.topmenu {
+	border: 1px dotted green;
+	padding-left: 1%;
+	margin-top: 1%;
+	margin-bottom: 1%;
+	font-size: 110%;
+	font-weight: bold;
+	background-color: #bedaf2;
+	width: 98.9%;
+	display: block;
+	position: relative;
+}
+
+.topmenu ol {
+	border1: 1px dotted blue;
+	display: inline;
+	padding: 0;
+	margin: 0;
+	float: left;
+}	
+.topmenu li {
+	display: inline;
+	border: 1px solid #8eaac2;
+	margin: 0;
+	padding1: 0.3em 0.8em;
+	padding: 0;
+	background-color: #9ebad2;
+	list-style: none;
+	float: left;
+}	
+.topmenu a:visited, .topmenu a:link, .topmenu a:active {
+	color: #3e5a72;
+	text-decoration: none;
+}	
+.topmenu a:hover {
+	color: #3e5a72;
+	text-decoration: underline;
+}	
+
+
+
+.floatmenu {
+	border: 1px solid #bedaf2;
+	font-size: 110%;
+	font-weight: bold;
+	background-color1: #bedaf2;
+	background-color: white;
+	display: block;
+	margin: 2.5em 10px 4px 10px;
+	padding: 4px;
+	float: right;
+}
+
+.floatmenu ol {
+	border1: 1px dotted blue;
+	display: block;
+	padding: 0;
+	margin: 0;
+}	
+.floatmenu li {
+	display: block;
+	border: 2px solid ;
+	border-color:  #bedaf2 #7e9ab2 #7e9ab2 #bedaf2;
+	margin: 0.3em 0.4em;
+	background-color: #9ebad2;
+	padding: 0.2em 0.6em;
+	list-style: none;
+	text-align: center;
+}	
+.floatmenu a:visited, .floatmenu a:link, .floatmenu a:active {
+	color: #3e5a72;
+	text-decoration: none;
+}	
+.floatmenu a:hover {
+	color: #3e5a72;
+	text-decoration: underline;
+}	
+
+.floatmenu, .topmenu {
+	font-family: Tahoma;
+}
+
+
+div.download {
+	margin: 0.3em;
+	padding: 0.3em;
+	border: solid 1px #bedaf2;
+	width: auto;
+	color: #3e5a72;
+	float1: left;
+}
+
+table.download {
+	border: solid 1px green;
+	font-weight: bold;
+	margin-left: 0.5em;
+	background1: #CCFFCC;
+}
+
+.download td {
+	border: 1px solid #00CC00;
+	padding: 10px;
+	vertical-align: middle;
+}
+
+.download td, .download a:visited, .download a:link, .download a:active {
+	color1: #3e5a72;
+	color: #3e725a;
+	text-decoration: none;
+}
+.download a:hover {
+	color1: #3e5a72;
+	color: #3e725a;
+	text-decoration: underline;
+}	
+.download td.icon {
+	background: url(downg.png) no-repeat right center;
+	padding-right: 0;
+}	
+.download td.icon a {
+	padding-right: 32px;
+	margin-right: 0;
+	border1: 1px solid red;
+}	
+
+pre.pb {
+	margin-left: 0.3em;
+	padding: 0.3em;
+	background-color1: #ccd6e0;
+	background-color: #ffffee;
+	border: 1px solid #ccd6e0;
+}
+pre {
+	margin-left: 0.3em;
+	padding: 0.3em;
+}
+
+.cmt {
+	color: #5e7a92;
+}
+

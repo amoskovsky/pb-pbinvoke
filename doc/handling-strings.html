@@ -1,0 +1,59 @@
+<h1>Handling strings (char*, wchar_t*)</h1>
+
+<h2>Charset conversion</h2>
+When a function parameter is declared as char* or wchar_t*, 
+PBInvoke automatically converts the charset of the string if PowerBuilder 
+native strings have different charset.
+
+<pb>
+lnv_fn1 = lnv_somelib.of_declare_method("int strlen(char*s)")
+lnv_fn2 = lnv_somelib.of_declare_method("int wcslen(wchar_t*s)")
+
+// in PB9
+ll_len = lnv_fn1.of_invoke("test") // no conversion, both caller and callee are ANSI
+ll_len = lnv_fn2.of_invoke("test") // implicitly converts the string from ANSI to Unicode
+
+// in PB10+ 
+ll_len = lnv_fn1.of_invoke("test") // implicitly converts the string from Unicode to ANSI
+ll_len = lnv_fn2.of_invoke("test") // no conversion, both caller and callee are Unicode
+</pb>
+
+Combinations of char and wchar_t in one function are supported as well.
+<pb>
+lnv_fn = lnv_somelib.of_declare_method("void some_fn(char*s1, wchar_t*s2)")
+// in PB9
+lb_res = lnv_fn.of_invoke("test1", "test2") // "test1" - no conversion
+                                            // "test2" - ANSI -> Unicode
+// in PB10 - vice versa
+</pb>
+
+<p>
+Special handling is performed for TCHAR based parameters.
+See <a href="handling-tchar.html">Handling TCHAR and TSTR. Unicode/ANSI function name suffixes.</a>
+
+<h2>Passing numeric address of string instead of string</h2>
+
+If you got an address of some string as a numeric value, for example as a result of calling another function,
+you can pass this number instead of a PB string value. Passing 0 or null value gives NULL string pointers. 
+<p> If a numeric address is passed instead of a string then no charset conversion is done.
+
+<pb>
+lnv_fn = lnv_somelib.of_declare_method("void some_fn(char*s)")
+
+lnv_s = lnv_core.of_create_value_of(LPSTR) //  LPSTR is char* in WinAPI
+lnv_fn.of_invoke(lnv_s.of_get_ptr())       //  of_get_ptr() gets the numeric value of the pointer
+
+// incorrect use:
+lnv_s = lnv_core.of_create_value_of(LPWSTR) // LPWSTR is wchar_t* in WinAPI
+lnv_fn.of_invoke(lnv_s.of_get_ptr())       // WRONG! because no conversion is done, 
+                                            // and the function expects char* and not wchar_t*
+// passing NULL
+lnv_fn.of_invoke(0) 
+SetNull(ls_null)
+lnv_fn.of_invoke(ls_null) 
+
+</pb>
+
+<h3>See also</h3>
+<li> <a href="handling-tchar.html">Handling TCHAR and TSTR. Unicode/ANSI function name suffixes</a>
+

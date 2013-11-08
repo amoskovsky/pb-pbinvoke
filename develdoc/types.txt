@@ -1,0 +1,17 @@
+Система классов в PB и C++
+
+n_pi_core               <->  Core
+n_pi_base_type          <->  BaseType
+   n_pi_string_type     <->    StringType
+   ...                  <->      WStringType
+   ...                  <->      AStringType
+   ...                  <->      TStringType
+   n_pi_int_type        <->    IntType
+   ...                  <->    ShortType
+   n_pi_double_type     <->    DoubleType   (TODO float)
+   n_pi_method_type     <->    MethodType   (соответствует указателю на ф-ю)
+   n_pi_structure_type  <->    StructType   (TODO) (соответствует указателю на структуру)  
+   n_pi_blob_type       <->    BlobType   (TODO) (соответствует BYTE*)  
+n_pi_library            <->  Library
+n_pi_method             <->  Method
+n_pi_callback           <->  PBCallback (один или несколько на один n_pi_callback)

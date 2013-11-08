@@ -1,0 +1,27 @@
+
+Схема работы с библиотекой такая:
+
+n_pi_core pi
+n_pi_lib lib 
+n_pi_method m
+...
+pi.of_declare_type("unsigned long DWORD") // C-style
+pi.of_declare_type("BOOL: bool") // Pascal-style (возможно в будущем)
+...
+lib = pi.of_declare_dll("kernel32.dll")
+m = lib.of_declare_method("BOOL CopyFile(LPCTSTR lpExistingFileName, 
+  LPCTSTR lpNewFileName,  BOOL bFailIfExists)")
+...
+Boolean lb_result
+lb_result = m.of_invoke("oldfile.txt", "newfile.txt", true)
+
+Типы данных LPCTSTR и LPTSTR встроены в PbInvoke и их использование в прототипе внешней 
+ф-и заставляет PbInvoke вызывать либо ANSI- либо Unicode-версию ф-и добавляя
+к имени ф-и суффикс A или W в зависимости от версии PB.
+Если в прототипе не используются типы с TSTR то имя ф-и берется как есть, без суффиксов. 
+
+Это был простой пример, который можно реализовать и обычными external-функциями.
+Видно что в этом случае использование библиотеки не сложнее использования встроенных 
+возможностей PB.
+
+TODO SetTimer 

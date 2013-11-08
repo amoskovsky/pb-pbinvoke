@@ -1,0 +1,34 @@
+<%
+   my $parent = $page->reuse ('..');
+   $$page{TITLE} = '$TITLE';
+   $$page{DIRTITLE} = '$TITLE';
+   push @{$$page{KEYWORDS}}, qw(PBInvoke PowerBuilder DLL union C C++ callbacks);
+   $$page{STYLE} = "/t/style/style.css";
+%>
+
+<%$page->include('/t/header.html')%>
+
+$CONTENT
+
+
+<%
+   $$page{LINKS} = 
+   [
+      [
+         'PBInvoke',
+         [
+         	['index.html', 'Home'],
+         	['download.html', 'Download Demo'],
+         	['doc.html', 'Documentation'],
+         	['purchase.html', 'Purchase'],
+         ],
+      ],
+      $SEEALSO
+   ];
+
+%>
+
+<%$page->include('/t/footer.html')%>
+
+
+
