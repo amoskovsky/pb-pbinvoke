@@ -119,7 +119,7 @@ BOOL PBCALL core_setAppHandle(DWORD handle)
 {
     PBExceptionStorageInstance.clearLastExceptionMessage();
     try {
-        
+        CoreInstance.initTChar();
         return true;
     }
     catch(...) {
